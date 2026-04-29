@@ -255,7 +255,11 @@ body{background:var(--ink);color:var(--text);font-family:'Crimson Pro',serif;fon
 .ai-figure-glow{position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(circle,rgba(155,89,182,.35) 0%,transparent 70%);animation:aiGlowPulse 3s ease-in-out infinite;}
 @keyframes aiGlowPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
 .ai-figure-svg{width:68px;height:88px;position:relative;z-index:2;filter:drop-shadow(0 0 10px rgba(155,89,182,.6));}
-.ai-particle{display:none;}
+.ai-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--ai-glow);pointer-events:none;z-index:3;}
+.ai-particle:nth-child(2){top:5%;left:8%;animation:floatP 4s 0s infinite;}
+.ai-particle:nth-child(3){top:25%;right:5%;animation:floatP 3.5s .7s infinite;}
+.ai-particle:nth-child(4){bottom:25%;left:5%;animation:floatP 5s 1.2s infinite;}
+@keyframes floatP{0%,100%{transform:translateY(0) scale(1);opacity:.5;}50%{transform:translateY(-8px) scale(1.5);opacity:1;}}
 .ai-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:var(--ai-glow);text-transform:uppercase;}
 .ai-status{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--text-dim);letter-spacing:1px;text-align:center;}
 .ai-figure-wrap.speaking .ai-figure-glow{animation:aiGlowSpeak .25s ease-in-out infinite;}
@@ -996,7 +1000,116 @@ body{background:var(--ink);color:var(--text);font-family:'Crimson Pro',serif;fon
         </div>
       </div>
     </div>
-    <!-- PAINEL IA dentro do layout -->
+    <!-- PAINEL IA — coluna lateral fixa -->
+    <div class="ai-panel" id="ai-panel" style="display:none;flex-direction:column;flex-shrink:0;width:320px;border-left:1px solid rgba(155,89,182,.3);background:var(--panel);overflow:hidden;">
+      <div style="height:1px;background:linear-gradient(90deg,transparent,var(--ai-glow),transparent);flex-shrink:0;"></div>
+      <!-- Header com figura -->
+      <div class="ai-panel-head">
+        <div class="ai-figure-wrap" id="ai-figure-wrap" style="cursor:default;width:80px;height:100px;flex-shrink:0;position:relative;">
+          <div class="ai-figure-glow"></div>
+          <div class="ai-particle"></div>
+          <div class="ai-particle"></div>
+          <div class="ai-particle"></div>
+          <svg class="ai-figure-svg" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:100px;">
+            <defs>
+              <radialGradient id="cloakGrad" cx="50%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#1a0f2e"/>
+                <stop offset="60%" stop-color="#0d0820"/>
+                <stop offset="100%" stop-color="#050310"/>
+              </radialGradient>
+              <radialGradient id="hoodShadow" cx="50%" cy="60%" r="55%">
+                <stop offset="0%" stop-color="#000008" stop-opacity="1"/>
+                <stop offset="70%" stop-color="#0a0518" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#150a2a" stop-opacity="1"/>
+              </radialGradient>
+              <radialGradient id="glowBg" cx="50%" cy="40%" r="50%">
+                <stop offset="0%" stop-color="#4a1a7a" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#1a0830" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="softGlow">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="strongGlow">
+                <feGaussianBlur stdDeviation="4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Máscara de sombra para o interior do capuz -->
+              <radialGradient id="faceVoid" cx="50%" cy="45%" r="48%">
+                <stop offset="0%" stop-color="#000005"/>
+                <stop offset="55%" stop-color="#03010a"/>
+                <stop offset="100%" stop-color="#0a0520"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Aura de fundo -->
+            <ellipse cx="60" cy="70" rx="52" ry="65" fill="url(#glowBg)"/>
+
+            <!-- Manto/corpo — forma larga encapuzada -->
+            <path d="M10,150 Q5,110 8,90 Q15,70 25,65 Q35,60 40,58 Q50,55 60,54 Q70,55 80,58 Q85,60 95,65 Q105,70 112,90 Q115,110 110,150 Z" fill="url(#cloakGrad)"/>
+
+            <!-- Bordas do manto com brilho dourado/roxo -->
+            <path d="M40,58 Q50,52 60,51 Q70,52 80,58" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+            <path d="M25,65 Q30,58 40,58 Q50,52 60,51 Q70,52 80,58 Q90,58 95,65" fill="none" stroke="#7b3fa0" stroke-width="0.6" opacity="0.5"/>
+
+            <!-- Linha central do manto -->
+            <line x1="60" y1="75" x2="60" y2="145" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/>
+
+            <!-- Capuz — forma principal -->
+            <path d="M22,75 Q18,55 20,38 Q25,15 40,8 Q50,3 60,2 Q70,3 80,8 Q95,15 100,38 Q102,55 98,75 Q90,85 75,87 Q65,88 60,88 Q55,88 45,87 Q30,85 22,75 Z" fill="url(#cloakGrad)"/>
+
+            <!-- Borda do capuz com brilho dourado -->
+            <path d="M22,75 Q18,55 20,38 Q25,15 40,8 Q50,3 60,2 Q70,3 80,8 Q95,15 100,38 Q102,55 98,75" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
+
+            <!-- Interior do capuz — escuridão profunda -->
+            <ellipse cx="60" cy="52" rx="28" ry="32" fill="url(#hoodShadow)"/>
+            <ellipse cx="60" cy="54" rx="24" ry="28" fill="url(#faceVoid)"/>
+
+            <!-- Sombra extra para aprofundar o rosto -->
+            <ellipse cx="60" cy="50" rx="20" ry="25" fill="#000008" opacity="0.9"/>
+
+            <!-- Olhos — só um brilho roxo muito sutil, quase imperceptível -->
+            <ellipse cx="52" cy="44" rx="3" ry="1.8" fill="#3d0d6b" opacity="0.4" filter="url(#softGlow)"/>
+            <ellipse cx="68" cy="44" rx="3" ry="1.8" fill="#3d0d6b" opacity="0.4" filter="url(#softGlow)"/>
+
+            <!-- BOCA — única parte visível, com brilho -->
+            <g id="ai-mouth-g">
+              <path id="ai-mouth" d="M51,63 Q56,66 60,66 Q64,66 69,63" fill="none" stroke="#cc88ff" stroke-width="1.8" stroke-linecap="round" filter="url(#softGlow)" opacity="0.95"/>
+              <!-- Brilho extra da boca -->
+              <path d="M51,63 Q56,66 60,66 Q64,66 69,63" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-linecap="round" opacity="0.4"/>
+            </g>
+
+            <!-- Fecho/amuleto no pescoço -->
+            <circle cx="60" cy="80" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
+            <circle cx="60" cy="80" r="1.5" fill="#9b59b6" opacity="0.6" filter="url(#softGlow)"/>
+
+            <!-- Partícula de magia na mão esquerda -->
+            <circle cx="32" cy="110" r="2.5" fill="#7b2fbe" opacity="0.5" filter="url(#softGlow)"/>
+            <circle cx="88" cy="105" r="2" fill="#9b59b6" opacity="0.4" filter="url(#softGlow)"/>
+
+            <!-- Símbolo místico no manto -->
+            <polygon points="60,95 56,102 64,102" fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/>
+          </svg>
+        </div>
+        <div style="flex:1;min-width:0;padding-left:4px;">
+          <div class="ai-panel-title">🔮 O Mestre</div>
+          <div class="ai-status" id="ai-status-lbl" style="margin-top:3px;">clique para falar</div>
+        </div>
+        <button class="ai-panel-close" onclick="toggleAIPanel()">✕</button>
+      </div>
+      <!-- Narração -->
+      <div class="ai-narration" id="ai-narration">
+        <div class="ai-msg">
+          <div class="ai-msg-who system">◈ Sistema</div>
+          <div class="ai-msg-text system">Crie seu personagem e envie uma mensagem para começar a aventura.</div>
+        </div>
+      </div>
+      <!-- Input -->
+      <div class="ai-input-area">
+        <textarea class="ai-input" id="ai-input" placeholder="O que você faz?..." rows="1"></textarea>
+        <button class="ai-send" id="ai-send-btn" onclick="sendToAI()">▶</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1208,7 +1321,7 @@ const ATTRS=['Agilidade','Força','Intelecto','Presença','Vigor'];
 const AK={AGI:'Agilidade',FOR:'Força',INT:'Intelecto',PRE:'Presença',VIG:'Vigor'};
 
 let role=null,player=null,mesaId=null;
-let anthropicApiKey=localStorage.getItem('op_api_key')||'';
+let anthropicApiKey=localStorage.getItem('op_api_key')||''; // também carregada do Firebase
 let allPlayers={},allMesas={},allMonsters={};
 let activePk=null,activeSlot=null,pendingAction=null,editMonId=null;
 let monRevelas={nome:true,pv:true,img:true,tipo:false,def:false,desc:false};
@@ -1259,15 +1372,26 @@ function injectApiKeyField(){
   if(!loginBox)return;
   const wrap=document.createElement('div');
   wrap.style.cssText='margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border);';
+  // Só mostra o campo de key para o mestre
+  const isMTab = document.querySelector('.login-tab.active')?.textContent?.includes('Mestre');
   wrap.innerHTML=`
-    <label class="fl" style="color:var(--ai-glow);">🔮 OpenAI API Key <span style="color:var(--text-dim);font-size:8px;">(IA Mestre)</span></label>
+    <label class="fl" style="color:var(--ai-glow);">🔮 OpenAI API Key <span style="color:var(--text-dim);font-size:8px;">(configurada pelo Mestre — salva para todos)</span></label>
     <input class="fi" type="password" id="api-key-input" placeholder="sk-..." style="margin-bottom:4px;border-color:rgba(155,89,182,.3);" value="${anthropicApiKey}">
-    <div style="font-family:\"Share Tech Mono\",monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;">Obtenha em <span style="color:var(--ai-glow)">platform.openai.com/api-keys</span></div>
+    <div style="font-family:\"Share Tech Mono\",monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;">Configure uma vez. Jogadores não precisam digitar. Obtenha em <span style="color:var(--ai-glow)">platform.openai.com</span></div>
   `;
   loginBox.insertBefore(wrap,loginBox.firstChild);
-  document.getElementById('api-key-input').addEventListener('change',e=>{
+  document.getElementById('api-key-input').addEventListener('change',async e=>{
     anthropicApiKey=e.target.value.trim();
     localStorage.setItem('op_api_key',anthropicApiKey);
+    // Salva no Firebase para todos usarem
+    if(anthropicApiKey){
+      await ds('config/apiKey', anthropicApiKey);
+      const saved=document.createElement('div');
+      saved.style.cssText='font-family:Share Tech Mono,monospace;font-size:9px;color:var(--teal-bright);margin-top:4px;';
+      saved.textContent='✓ Key salva para todas as mesas';
+      e.target.parentElement.appendChild(saved);
+      setTimeout(()=>saved.remove(),3000);
+    }
   });
 }
 
@@ -1822,7 +1946,15 @@ async function loginSoloIA(){
 function logout(){sessionStorage.removeItem('op');role=null;player=null;mesaId=null;isMesaIA=false;stopMusic();show('screen-login');}
 
 // ════════════ MESTRE ════════════
-function enterM(){role='m';show('screen-mestre');dl('mesas',v=>{allMesas=v||{};renderMesas();});}
+function enterM(){
+  role='m';show('screen-mestre');
+  dl('mesas',v=>{allMesas=v||{};renderMesas();});
+  // Carrega API key do Firebase
+  dg('config/apiKey').then(v=>{
+    if(v){anthropicApiKey=v;localStorage.setItem('op_api_key',v);
+      const inp=document.getElementById('api-key-input');if(inp)inp.value=v;}
+  });
+}
 
 function renderMesas(){
   const g=document.getElementById('mg');const keys=Object.keys(allMesas);
@@ -2017,7 +2149,7 @@ function enterJ(){
     // Painel começa aberto
     aiPanelOpen=true;
     const panel=document.getElementById('ai-panel');
-    if(panel)panel.classList.add('open');
+    if(panel)panel.style.display='flex';
     document.getElementById('music-btn').style.display='block';
   }
   show('screen-jogador');checkChar();
@@ -2242,12 +2374,11 @@ async function aiNotifyVitalChange(stat,from,to,max,dir){
 function toggleAIPanel(){
   aiPanelOpen=!aiPanelOpen;
   const panel=document.getElementById('ai-panel');
-  if(panel)panel.classList.toggle('open',aiPanelOpen);
+  if(panel){
+    panel.style.display=aiPanelOpen?'flex':'none';
+  }
   const btn=document.getElementById('ai-panel-btn');
   if(btn)btn.classList.toggle('open',aiPanelOpen);
-  if(aiPanelOpen&&aiConversationHistory.length===0&&allPlayers[player]?.hasChar===false){
-    addAIMessage('narrator','Crie seu personagem primeiro, aventureiro. Quando estiver pronto, volte para mim e começamos.');
-  }
 }
 
 function addAIMessage(who,text,typing=false){
@@ -2363,14 +2494,22 @@ function startMouthAnim(){
   let open=false;
   mouthAnim=setInterval(()=>{
     open=!open;
-    if(open)mouth.setAttribute('d','M44,54 Q47,60 50,61 Q53,60 56,54');
-    else mouth.setAttribute('d','M44,56 Q50,58 56,56');
-  },120);
+    if(open){
+      mouth.setAttribute('d','M51,61 Q56,68 60,69 Q64,68 69,61');
+      mouth.setAttribute('stroke-width','2');
+    } else {
+      mouth.setAttribute('d','M51,63 Q56,66 60,66 Q64,66 69,63');
+      mouth.setAttribute('stroke-width','1.8');
+    }
+  },130);
 }
 function stopMouthAnim(){
   if(mouthAnim)clearInterval(mouthAnim);mouthAnim=null;
   const mouth=document.getElementById('ai-mouth');
-  if(mouth)mouth.setAttribute('d','M44,56 Q50,58 56,56');
+  if(mouth){
+    mouth.setAttribute('d','M51,63 Q56,66 60,66 Q64,66 69,63');
+    mouth.setAttribute('stroke-width','1.8');
+  }
 }
 
 // ════════════ MÚSICA AMBIENTE (Web Audio API) ════════════
@@ -2382,41 +2521,48 @@ function initAudio(){
 function startMusic(){
   initAudio();if(!audioCtx)return;
   stopMusic();
-  const masterGain=audioCtx.createGain();masterGain.gain.value=0.45;masterGain.connect(audioCtx.destination);
+  const masterGain=audioCtx.createGain();masterGain.gain.value=0;masterGain.connect(audioCtx.destination);
+  masterGain.gain.linearRampToValueAtTime(0.6,audioCtx.currentTime+3);
 
-  // Drone base sombrio
-  function makeDrone(freq,gainVal,detune=0){
-    const osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=freq;osc.detune.value=detune;
-    const g=audioCtx.createGain();g.gain.value=gainVal;
-    const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=400;
-    osc.connect(filter);filter.connect(g);g.connect(masterGain);osc.start();
+  function makeDrone(freq,vol,type='sine',detune=0){
+    const osc=audioCtx.createOscillator();osc.type=type;osc.frequency.value=freq;osc.detune.value=detune;
+    const g=audioCtx.createGain();g.gain.value=vol;
+    const lp=audioCtx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=800;
+    osc.connect(lp);lp.connect(g);g.connect(masterGain);osc.start();
     return{osc,g};
   }
-  const d1=makeDrone(55,0.4);  // A1 baixo
-  const d2=makeDrone(82.5,0.3,-8); // E2 levemente desafinado
-  const d3=makeDrone(110,0.2,5);  // A2
 
-  // Pulso lento misterioso (LFO no gain)
-  const lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.15;
-  const lfoGain=audioCtx.createGain();lfoGain.gain.value=0.08;
-  lfo.connect(lfoGain);lfoGain.connect(masterGain.gain);lfo.start();
+  const d1=makeDrone(55,0.5);
+  const d2=makeDrone(110,0.3,'sine',10);
+  const d3=makeDrone(165,0.2);
+  const pad=makeDrone(220,0.2,'triangle');
 
-  // Tinidos ocasionais
+  const lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.1;
+  const lfoG=audioCtx.createGain();lfoG.gain.value=0.15;
+  lfo.connect(lfoG);lfoG.connect(d1.g.gain);lfo.start();
+
+  // Reverb via delay
+  const delay=audioCtx.createDelay(2);delay.delayTime.value=1.5;
+  const delayG=audioCtx.createGain();delayG.gain.value=0.3;
+  pad.g.connect(delay);delay.connect(delayG);delayG.connect(masterGain);delayG.connect(delay);
+
   function schedTinkle(){
-    const delay=8000+Math.random()*12000;
     setTimeout(()=>{
       if(!musicOn)return;
+      const freqs=[220,277,330,415,494];
       const osc=audioCtx.createOscillator();osc.type='sine';
-      const freqs=[440,493.88,523.25,587.33,659.25];
       osc.frequency.value=freqs[Math.floor(Math.random()*freqs.length)];
-      const g=audioCtx.createGain();g.gain.setValueAtTime(0,audioCtx.currentTime);g.gain.linearRampToValueAtTime(0.06,audioCtx.currentTime+0.05);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+3);
-      osc.connect(g);g.connect(masterGain);osc.start();osc.stop(audioCtx.currentTime+3);
+      const g=audioCtx.createGain();
+      g.gain.setValueAtTime(0,audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+0.1);
+      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+4);
+      osc.connect(g);g.connect(masterGain);osc.start();osc.stop(audioCtx.currentTime+4);
       schedTinkle();
-    },delay);
+    },5000+Math.random()*9000);
   }
   schedTinkle();
 
-  musicNodes=[d1,d2,d3,{osc:lfo,g:lfoGain},{g:masterGain}];
+  musicNodes=[d1,d2,d3,pad,{osc:lfo,g:lfoG},{g:masterGain}];
   musicOn=true;
   document.getElementById('music-btn').textContent='♪ Música ON';
   document.getElementById('music-btn').classList.add('on');
@@ -2432,6 +2578,12 @@ function toggleMusic(){if(musicOn)stopMusic();else startMusic();}
 
 // ════════════ LISTENERS ════════════
 function listenChar(){
+  // Se mesa IA, carrega key do Firebase
+  if(isMesaIA&&!anthropicApiKey){
+    dg('config/apiKey').then(v=>{
+      if(v){anthropicApiKey=v;localStorage.setItem('op_api_key',v);}
+    });
+  }
   dl('mesas/'+mesaId+'/players/'+player,v=>{if(v){allPlayers[player]=v;renderCard(v);}});
   dl('mesas/'+mesaId+'/players',v=>{if(v){allPlayers=v;renderJSidebar(v);}});
   dl('mesas/'+mesaId+'/monsters',v=>{renderJMonsters(v||{});});
