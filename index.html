@@ -1,0 +1,2640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordem Paranormal — Mesa Virtual</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, update, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBPc0W0IEbINOGssTpB8eqzFCgzaKQwFHw",
+    authDomain: "ordem-paranormal-cead1.firebaseapp.com",
+    databaseURL: "https://ordem-paranormal-cead1-default-rtdb.firebaseio.com",
+    projectId: "ordem-paranormal-cead1",
+    storageBucket: "ordem-paranormal-cead1.firebasestorage.app",
+    messagingSenderId: "645530223077",
+    appId: "1:645530223077:web:03b59b1f624d92325c6f0c"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  window._db=db; window._ref=ref; window._set=set; window._get=get;
+  window._update=update; window._onValue=onValue; window._remove=remove; window._push=push;
+  document.dispatchEvent(new Event('dbReady'));
+</script>
+<style>
+:root {
+  --ink:#0a0a0d; --panel:#13121a; --card:#17161f;
+  --border:#2a2838; --border-hi:#3d3a55; --border-glow:#5a5480;
+  --text:#c8c4dc; --text-dim:#6a6580; --text-bright:#e8e4f8;
+  --gold:#c9a84c; --gold-dim:#6b5420; --gold-glow:rgba(201,168,76,.15);
+  --crimson:#8b1a2a; --crimson-bright:#c0392b; --crimson-glow:rgba(139,26,42,.2);
+  --violet:#4a3a7a; --violet-bright:#7b5ea7; --violet-glow:rgba(74,58,122,.25);
+  --teal-bright:#2aa198; --vida:#c0392b; --san:#5a3a8a; --pe:#b8860b;
+  --pending:#b8860b; --pending-glow:rgba(184,134,11,.15);
+  --sidebar-w:300px;
+  --ai-glow:#9b59b6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--ink);color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;min-height:100vh;
+  background-image:radial-gradient(ellipse 60% 40% at 20% 0%,rgba(74,58,122,.1) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 80% 100%,rgba(139,26,42,.07) 0%,transparent 60%);}
+.screen{display:none;min-height:100vh;}.screen.active{display:flex;flex-direction:column;}
+
+/* ── LOGIN ── */
+#screen-login{align-items:center;justify-content:center;padding:24px;}
+.login-wrap{width:100%;max-width:460px;animation:riseIn .6s cubic-bezier(.16,1,.3,1) both;}
+.login-sigil{text-align:center;margin-bottom:28px;}
+.sigil-ring{width:80px;height:80px;border:1px solid var(--border-hi);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;background:radial-gradient(circle,var(--violet-glow) 0%,transparent 70%);box-shadow:0 0 30px var(--violet-glow);}
+.login-title{font-family:'Cinzel',serif;font-size:22px;font-weight:700;letter-spacing:5px;color:var(--text-bright);}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--text-dim);margin-top:4px;}
+.login-box{background:var(--panel);border:1px solid var(--border-hi);padding:32px;position:relative;}
+.login-box::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.login-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.login-tab{flex:1;padding:10px;background:none;border:none;font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;}
+.login-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.lf{display:none;}.lf.on{display:block;}
+.fl{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.fi{width:100%;background:#0a0a0e;border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:14px;padding:11px 13px;outline:none;transition:border-color .2s;margin-bottom:14px;}
+.fi:focus{border-color:var(--gold);}
+.fs{width:100%;background:#0a0a0e;border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:13px;padding:11px 13px;outline:none;transition:border-color .2s;margin-bottom:14px;cursor:pointer;}
+.fs:focus{border-color:var(--gold);}
+.btn-rune{width:100%;padding:13px;background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;letter-spacing:5px;text-transform:uppercase;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.btn-rune::before{content:'';position:absolute;inset:0;background:var(--gold-glow);transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.btn-rune:hover::before{transform:scaleX(1);}
+.btn-rune:hover{color:var(--text-bright);}
+.btn-rune span{position:relative;z-index:1;}
+
+/* BOTÃO SOLO IA */
+.btn-solo-ia{width:100%;padding:13px;background:transparent;border:1px solid rgba(155,89,182,.5);color:var(--ai-glow);font-family:'Cinzel',serif;font-size:12px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;margin-top:10px;}
+.btn-solo-ia::before{content:'';position:absolute;inset:0;background:rgba(155,89,182,.1);transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.btn-solo-ia:hover::before{transform:scaleX(1);}
+.btn-solo-ia:hover{color:#c39bd3;border-color:var(--ai-glow);}
+.btn-solo-ia span{position:relative;z-index:1;}
+.btn-solo-ia-hint{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-align:center;margin-top:6px;}
+
+.ferr{color:var(--crimson-bright);font-family:'Share Tech Mono',monospace;font-size:11px;text-align:center;margin-top:10px;min-height:16px;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:rgba(13,12,17,.97);backdrop-filter:blur(8px);position:sticky;top:0;z-index:100;flex-shrink:0;}
+.topbar-brand{font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.bg{padding:6px 13px;background:transparent;border:1px solid var(--border-hi);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.bg:hover{border-color:var(--gold);color:var(--gold);}
+.bg.acc{border-color:var(--gold-dim);color:var(--gold);}
+.bg.acc:hover{background:var(--gold-glow);}
+.bg.red:hover{border-color:var(--crimson-bright);color:var(--crimson-bright);}
+.badge{display:inline-block;padding:3px 9px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid;}
+.bm{color:var(--gold);border-color:var(--gold-dim);}
+.bj{color:var(--violet-bright);border-color:var(--violet);}
+.bai{color:var(--ai-glow);border-color:rgba(155,89,182,.4);animation:aiPulse 3s infinite;}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 0 transparent;}50%{box-shadow:0 0 8px rgba(155,89,182,.4);}}
+
+/* ── PAGE ── */
+.pc{flex:1;padding:24px;overflow-y:auto;}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.ptitle{font-family:'Cinzel',serif;font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--text-dim);}
+.ptitle em{color:var(--gold);font-style:normal;}
+.empty-st{text-align:center;padding:50px 20px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;line-height:2.2;}
+
+/* ── MESAS ── */
+.mesas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.mesa-card{background:var(--panel);border:1px solid var(--border);overflow:hidden;transition:border-color .2s;}
+.mesa-card:hover{border-color:var(--border-hi);}
+.mesa-card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--violet-bright),transparent);opacity:.5;}
+.mesa-card.ia-mesa::before{background:linear-gradient(90deg,transparent,var(--ai-glow),transparent);opacity:.7;}
+.mc-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.mc-name{font-family:'Cinzel',serif;font-size:16px;color:var(--text-bright);}
+.mc-code{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);background:rgba(201,168,76,.08);border:1px solid var(--gold-dim);padding:3px 9px;letter-spacing:3px;flex-shrink:0;}
+.mc-body{padding:14px 18px 16px;}
+.mc-pips{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.mc-pip{width:30px;height:30px;border:1px solid var(--border-hi);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;}
+.mc-pip img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.mc-stat{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:12px;}
+.mc-stat em{color:var(--text);}
+.mc-acts{display:flex;gap:7px;}
+.btn-open{flex:2;padding:9px;background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.05));border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-open:hover{background:var(--gold-glow);}
+.btn-del{flex:1;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;transition:all .2s;}
+.btn-del:hover{border-color:var(--crimson-bright);color:var(--crimson-bright);}
+.ia-badge-mesa{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;padding:2px 6px;border:1px solid rgba(155,89,182,.4);color:var(--ai-glow);text-transform:uppercase;display:inline-block;margin-bottom:8px;}
+
+/* ── MESA LAYOUT ── */
+#screen-mesa{background:var(--ink);}
+.mesa-layout{flex:1;display:flex;overflow:hidden;}
+.mesa-main{flex:1;overflow-y:auto;padding:22px;}
+.mesa-info-bar{background:var(--panel);border:1px solid var(--border);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.mic-display{font-family:'Special Elite',cursive;font-size:24px;letter-spacing:7px;color:var(--gold);padding:6px 14px;border:1px solid var(--gold-dim);background:rgba(201,168,76,.05);}
+.mic-hint{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);border-left:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;flex-shrink:0;transition:width .3s ease,opacity .3s ease;overflow:hidden;}
+.sidebar.collapsed{width:0;opacity:0;border-left:none;}
+.sidebar-inner{width:var(--sidebar-w);height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.sidebar-section{border-bottom:1px solid var(--border);}
+.sidebar-section-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);padding:12px 16px;display:flex;align-items:center;gap:6px;position:sticky;top:0;background:var(--panel);z-index:2;}
+.sidebar-section-title::before{content:'◈';color:var(--gold);font-size:9px;}
+.sidebar-toggle{padding:6px 13px;background:transparent;border:1px solid var(--border-hi);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.sidebar-toggle:hover{border-color:var(--gold);color:var(--gold);}
+.sidebar-toggle.open{border-color:var(--gold-dim);color:var(--gold);}
+
+.sa-card{padding:10px 14px;border-bottom:1px solid rgba(42,40,56,.6);cursor:pointer;transition:background .15s;}
+.sa-card:hover{background:rgba(255,255,255,.02);}
+.sa-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sa-av{width:34px;height:34px;border:1px solid var(--border-hi);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;}
+.sa-av img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.sa-name{font-family:'Cinzel',serif;font-size:12px;color:var(--text-bright);}
+.sa-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;margin-top:1px;}
+.sa-bars{display:flex;flex-direction:column;gap:4px;}
+.sa-bar-row{display:flex;align-items:center;gap:6px;}
+.sa-bar-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;width:8px;flex-shrink:0;}
+.sa-bar-lbl.v{color:var(--vida);}.sa-bar-lbl.s{color:var(--san);}
+.sa-bar{flex:1;height:4px;background:#0a0a0e;border:1px solid var(--border);}
+.sa-fill{height:100%;transition:width .4s;}
+.sa-fill.v{background:var(--vida);}.sa-fill.s{background:var(--san);}
+.sa-num{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);width:34px;text-align:right;}
+.sa-pend{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--pending);letter-spacing:1px;margin-top:4px;animation:pulse 2s infinite;}
+.sa-acts{display:flex;gap:0;margin-top:6px;border:1px solid var(--border);}
+.sa-act{flex:1;padding:5px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:8px;cursor:pointer;transition:all .2s;}
+.sa-act:last-child{border-right:none;}
+.sa-act:hover{background:var(--gold-glow);color:var(--gold);}
+.sa-act.red:hover{background:var(--crimson-glow);color:var(--crimson-bright);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+.sm-card{padding:10px 14px;border-bottom:1px solid rgba(139,26,42,.3);}
+.sm-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sm-av{width:32px;height:32px;border:1px solid var(--crimson);background:rgba(139,26,42,.1);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;}
+.sm-av img{width:100%;height:100%;object-fit:cover;}
+.sm-name{font-family:'Cinzel',serif;font-size:12px;color:#e8b4b8;}
+.sm-type{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--crimson-bright);letter-spacing:1px;margin-top:1px;}
+.sm-pv-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.sm-pv-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--crimson-bright);width:16px;}
+.sm-pv-bar{flex:1;height:4px;background:rgba(139,26,42,.2);border:1px solid rgba(139,26,42,.3);}
+.sm-pv-fill{height:100%;background:linear-gradient(90deg,#6b0a14,var(--crimson-bright));transition:width .4s;}
+.sm-pv-num{font-family:'Share Tech Mono',monospace;font-size:9px;color:#e8b4b8;}
+.sm-acts{display:flex;gap:0;border:1px solid rgba(139,26,42,.3);}
+.sm-act{flex:1;padding:5px;background:transparent;border:none;border-right:1px solid rgba(139,26,42,.3);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:8px;cursor:pointer;transition:all .2s;}
+.sm-act:last-child{border-right:none;}
+.sm-act:hover{background:var(--crimson-glow);color:#e8b4b8;}
+.sm-reveal-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px;}
+.srt{font-family:'Share Tech Mono',monospace;font-size:7px;padding:2px 5px;border:1px solid;text-transform:uppercase;}
+.srt.on{color:var(--crimson-bright);border-color:var(--crimson);}
+.srt.off{color:var(--text-dim);border-color:var(--border);opacity:.4;}
+
+.pend-item{padding:10px 14px;border-bottom:1px solid rgba(184,134,11,.2);background:rgba(184,134,11,.04);}
+.pend-who{font-family:'Cinzel',serif;font-size:11px;color:var(--text-bright);margin-bottom:3px;}
+.pend-change{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--pending);letter-spacing:1px;margin-bottom:6px;}
+.pend-acts{display:flex;gap:5px;}
+.btn-approve{flex:1;padding:6px;background:rgba(42,161,152,.1);border:1px solid var(--teal-bright);color:var(--teal-bright);font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-approve:hover{background:rgba(42,161,152,.2);}
+.btn-reject{flex:1;padding:6px;background:transparent;border:1px solid var(--crimson);color:var(--crimson-bright);font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-reject:hover{background:var(--crimson-glow);}
+
+.dice-log-entry{padding:7px 14px;border-bottom:1px solid rgba(42,40,56,.4);animation:fadeUp .3s ease;}
+.dle-who{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;}
+.dle-what{font-family:'Cinzel',serif;font-size:13px;margin:2px 0;}
+.dle-what.crit{color:var(--gold);text-shadow:0 0 6px rgba(201,168,76,.5);}
+.dle-what.fail{color:var(--crimson-bright);}
+.dle-what.ok{color:var(--teal-bright);}
+
+/* ── AGENTS ── */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.ac{background:var(--panel);border:1px solid var(--border);overflow:hidden;}
+.ac-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;cursor:pointer;}
+.ac-head:hover .ac-name{color:var(--gold);}
+.ac-av{width:42px;height:42px;border:1px solid var(--border-hi);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.ac-av img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.ac-name{font-family:'Cinzel',serif;font-size:14px;color:var(--text-bright);transition:color .2s;}
+.ac-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-top:2px;}
+.ac-nex{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);margin-top:2px;}
+.ac-bars{padding:8px 14px;display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.br label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px;}
+.br label.v{color:var(--vida);}.br label.s{color:var(--san);}
+.mb{height:4px;background:#0a0a0e;border:1px solid var(--border);}
+.mf{height:100%;}.mf.v{background:var(--vida);}.mf.s{background:var(--san);}
+.ac-inv{padding:5px 14px 10px;display:flex;gap:3px;flex-wrap:wrap;}
+.ip{width:20px;height:20px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:9px;}
+.ip.has{border-color:var(--border-hi);}
+.ac-acts{display:flex;border-top:1px solid var(--border);}
+.aab{flex:1;padding:7px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.aab:last-child{border-right:none;}
+.aab:hover{background:var(--gold-glow);color:var(--gold);}
+.aab.red:hover{background:var(--crimson-glow);color:var(--crimson-bright);}
+
+/* ── MONSTERS ── */
+.monsters-section{margin-top:24px;}
+.sec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--crimson-bright);display:flex;align-items:center;gap:6px;}
+.sec-title::before{content:'☽';font-size:12px;}
+.monsters-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.monc{background:var(--card);border:1px solid var(--crimson);overflow:hidden;}
+.monc::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--crimson-bright),transparent);}
+.monc-head{padding:11px 13px;border-bottom:1px solid rgba(139,26,42,.4);display:flex;gap:9px;align-items:center;}
+.monc-av{width:42px;height:42px;border:1px solid var(--crimson);background:rgba(139,26,42,.1);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0;}
+.monc-av img{width:100%;height:100%;object-fit:cover;}
+.monc-name{font-family:'Cinzel',serif;font-size:14px;color:#e8b4b8;}
+.monc-type{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--crimson-bright);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.monc-pv{padding:7px 13px;display:flex;align-items:center;gap:7px;}
+.monc-pvl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--crimson-bright);width:18px;}
+.monc-pvb{flex:1;height:5px;background:rgba(139,26,42,.2);border:1px solid rgba(139,26,42,.4);}
+.monc-pvf{height:100%;background:linear-gradient(90deg,#6b0a14,var(--crimson-bright));transition:width .4s;}
+.monc-pvn{font-family:'Share Tech Mono',monospace;font-size:10px;color:#e8b4b8;}
+.monc-reveals{padding:5px 13px;display:flex;gap:3px;flex-wrap:wrap;}
+.rt{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 6px;border:1px solid;text-transform:uppercase;}
+.rt.on{color:var(--crimson-bright);border-color:var(--crimson);}
+.rt.off{color:var(--text-dim);border-color:var(--border);opacity:.4;}
+.monc-acts{display:flex;border-top:1px solid rgba(139,26,42,.3);}
+.mab{flex:1;padding:7px;background:transparent;border:none;border-right:1px solid rgba(139,26,42,.3);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;transition:all .2s;}
+.mab:last-child{border-right:none;}
+.mab:hover{background:var(--crimson-glow);color:#e8b4b8;}
+
+/* ── AI MESTRE FIGURE ── */
+.ai-mestre-container{display:none;}
+.ai-mestre-container.visible{display:none;}
+.ai-figure-wrap{position:relative;width:68px;height:88px;flex-shrink:0;cursor:default;}
+.ai-figure-glow{position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(circle,rgba(155,89,182,.35) 0%,transparent 70%);animation:aiGlowPulse 3s ease-in-out infinite;}
+@keyframes aiGlowPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
+.ai-figure-svg{width:68px;height:88px;position:relative;z-index:2;filter:drop-shadow(0 0 10px rgba(155,89,182,.6));}
+.ai-particle{display:none;}
+.ai-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;color:var(--ai-glow);text-transform:uppercase;}
+.ai-status{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--text-dim);letter-spacing:1px;text-align:center;}
+.ai-figure-wrap.speaking .ai-figure-glow{animation:aiGlowSpeak .25s ease-in-out infinite;}
+@keyframes aiGlowSpeak{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.12);}}
+/* ── AI PAINEL lateral fixo ── */
+.ai-panel{width:320px;border-left:1px solid rgba(155,89,182,.3);background:var(--panel);display:none;flex-direction:column;flex-shrink:0;overflow:hidden;transition:width .3s,opacity .3s;}
+.ai-panel.open{display:flex;}
+.ai-panel::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--ai-glow),transparent);}
+.ai-panel-head{padding:10px 14px;border-bottom:1px solid rgba(155,89,182,.2);display:flex;align-items:center;gap:10px;background:rgba(155,89,182,.04);flex-shrink:0;}
+.ai-panel-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--ai-glow);flex:1;}
+.ai-panel-close{background:none;border:1px solid var(--border);color:var(--text-dim);width:22px;height:22px;cursor:pointer;transition:all .2s;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-panel-close:hover{border-color:var(--crimson-bright);color:var(--crimson-bright);}
+.ai-narration{flex:1;overflow-y:auto;padding:12px;scrollbar-width:thin;}
+.ai-msg{margin-bottom:12px;animation:fadeUp .4s ease;}
+.ai-msg-who{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.ai-msg-who.narrator{color:var(--ai-glow);}
+.ai-msg-who.player{color:var(--gold);}
+.ai-msg-who.system{color:var(--text-dim);}
+.ai-msg-text{font-family:'Crimson Pro',serif;font-size:14px;line-height:1.7;color:var(--text-bright);}
+.ai-msg-text.system{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);font-style:italic;}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:4px 0;}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--ai-glow);animation:typingDot 1.2s infinite;}
+.ai-dot:nth-child(2){animation-delay:.2s;}
+.ai-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-6px);opacity:1;}}
+.ai-input-area{padding:10px 14px;border-top:1px solid rgba(155,89,182,.2);display:flex;gap:8px;}
+.ai-input{flex:1;background:#0a0a0e;border:1px solid rgba(155,89,182,.3);color:var(--text-bright);font-family:'Crimson Pro',serif;font-size:13px;padding:8px 11px;outline:none;transition:border-color .2s;resize:none;height:38px;}
+.ai-input:focus{border-color:var(--ai-glow);}
+.ai-send{padding:8px 14px;background:rgba(155,89,182,.15);border:1px solid rgba(155,89,182,.4);color:var(--ai-glow);font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.ai-send:hover{background:rgba(155,89,182,.3);}
+
+/* Música toggle */
+.music-toggle{position:fixed;top:60px;right:14px;z-index:160;padding:6px 10px;background:rgba(13,12,17,.9);border:1px solid var(--border-hi);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.music-toggle:hover{border-color:var(--ai-glow);color:var(--ai-glow);}
+.music-toggle.on{border-color:var(--ai-glow);color:var(--ai-glow);}
+
+/* ── OVERLAYS ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;display:none;overflow-y:auto;}
+.ov.open{display:block;}
+
+.fm-wrap{max-width:980px;margin:20px auto;background:var(--panel);border:1px solid var(--border-hi);}
+.fm-wrap::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold) 40%,transparent);}
+.fm-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.fm-title{font-family:'Cinzel',serif;font-size:18px;letter-spacing:3px;color:var(--text-bright);}
+.fm-sub{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:3px;}
+.xb{background:none;border:1px solid var(--border);color:var(--text-dim);width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;flex-shrink:0;}
+.xb:hover{border-color:var(--crimson-bright);color:var(--crimson-bright);}
+.fm-body{display:grid;grid-template-columns:200px 1fr 210px;}
+.fc{border-right:1px solid var(--border);padding:14px;overflow-y:auto;max-height:80vh;}
+.fc:last-child{border-right:none;}
+.ms{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);margin:10px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--border);}
+.ms:first-child{margin-top:0;}
+.vr{margin-bottom:10px;}
+.vl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.vl.v{color:var(--vida);}.vl.s{color:var(--san);}.vl.pe{color:var(--pe);}
+.vc2{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.vb2{width:24px;height:24px;border:1px solid var(--border-hi);background:transparent;color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.vb2:hover{background:var(--gold-glow);border-color:var(--gold);color:var(--gold);}
+.vdis{font-family:'Special Elite',cursive;font-size:16px;color:var(--text-bright);flex:1;text-align:center;}
+.vbar{height:4px;background:#0a0a0e;border:1px solid var(--border);}
+.vfill{height:100%;transition:width .3s;}
+.vfill.v{background:linear-gradient(90deg,#5a0010,var(--vida));}
+.vfill.s{background:linear-gradient(90deg,#2a0a4a,var(--san));}
+.vfill.pe{background:linear-gradient(90deg,#5a4000,var(--pe));}
+.ar{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(42,40,56,.5);}
+.al{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);}
+.ai2{width:32px;background:transparent;border:none;border-bottom:1px solid transparent;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:12px;text-align:center;outline:none;}
+.ai2:focus{border-bottom-color:var(--gold);}
+.er2{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(42,40,56,.5);}
+.el2{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);}
+.ei2{width:60px;background:transparent;border:none;border-bottom:1px solid transparent;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:10px;text-align:center;outline:none;}
+.ei2:focus{border-bottom-color:var(--gold);}
+.sk-scroll{max-height:400px;overflow-y:auto;scrollbar-width:thin;}
+.skr{display:flex;align-items:center;gap:4px;padding:3px 1px;border-bottom:1px solid rgba(42,40,56,.4);}
+.skr:hover{background:rgba(255,255,255,.02);}
+.skn{font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);flex:1;}
+.ska{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);width:22px;text-align:center;}
+.ski{width:22px;background:transparent;border:none;border-bottom:1px solid transparent;color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:11px;text-align:center;outline:none;}
+.ski:focus{border-bottom-color:var(--gold);}
+.db{width:14px;height:14px;background:var(--border);border:none;border-radius:1px;cursor:pointer;font-size:8px;color:var(--text-dim);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.db:hover{background:var(--gold);color:#000;}
+.inv-grid2{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.isl{aspect-ratio:1;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;padding:3px;}
+.isl:hover{border-color:var(--gold);}
+.isl.has{border-color:var(--border-hi);}
+.isl-ic{font-size:18px;line-height:1;}
+.isl-nm{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--text-dim);text-transform:uppercase;margin-top:2px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;}
+.isl.has .isl-nm{color:var(--text);}
+.ixb{position:absolute;top:2px;right:2px;background:none;border:none;color:var(--text-dim);font-size:9px;cursor:pointer;display:none;}
+.isl.has:hover .ixb{display:block;}
+.ixb:hover{color:var(--crimson-bright);}
+.rl2{border-top:1px solid var(--border);padding:6px 8px;max-height:70px;overflow-y:auto;scrollbar-width:thin;}
+.re{font-family:'Share Tech Mono',monospace;font-size:10px;margin-bottom:2px;animation:fadeUp .3s ease;}
+.re.ok{color:var(--teal-bright);}.re.fail{color:var(--crimson-bright);}.re.crit{color:var(--gold);}
+.ritual-item{background:var(--card);border:1px solid var(--border);padding:9px 11px;margin-bottom:6px;}
+.ri-name{font-family:'Cinzel',serif;font-size:13px;color:var(--text-bright);margin-bottom:4px;}
+.ri-tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px;}
+.ri-tag{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;padding:2px 5px;border:1px solid var(--border-hi);color:var(--text-dim);text-transform:uppercase;}
+.ri-tag.elem{border-color:var(--violet);color:var(--violet-bright);}
+.ri-desc{font-family:'Crimson Pro',serif;font-style:italic;font-size:12px;color:var(--text-dim);}
+
+.mm-wrap{max-width:580px;margin:30px auto;background:var(--card);border:1px solid var(--crimson);}
+.mm-wrap::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--crimson-bright),transparent);}
+.mm-head{padding:16px 20px;border-bottom:1px solid rgba(139,26,42,.4);display:flex;align-items:center;justify-content:space-between;}
+.mm-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:#e8b4b8;}
+.mm-body{padding:20px;}
+.mm-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;}
+.mmf label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.mmf input,.mmf select,.mmf textarea{width:100%;background:#0a0a0e;border:1px solid rgba(139,26,42,.4);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;}
+.mmf input:focus,.mmf select:focus,.mmf textarea:focus{border-color:var(--crimson-bright);}
+.mmf.full{grid-column:1/-1;}
+.mmf textarea{resize:vertical;min-height:60px;font-family:'Crimson Pro',serif;font-size:13px;}
+.rev-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px;}
+.rtog{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .2s;}
+.rtog.on{border-color:var(--crimson);background:var(--crimson-glow);}
+.rtog-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;transition:color .2s;}
+.rtog.on .rtog-lbl{color:#e8b4b8;}
+.rtog-chk{width:12px;height:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .2s;flex-shrink:0;}
+.rtog.on .rtog-chk{border-color:var(--crimson-bright);background:var(--crimson-bright);color:#fff;}
+.mm-btns{display:flex;gap:8px;}
+.btn-invoke{flex:2;padding:10px;background:rgba(139,26,42,.15);border:1px solid var(--crimson);color:#e8b4b8;font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-invoke:hover{background:var(--crimson-glow);}
+.btn-cxl{flex:1;padding:10px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.btn-cxl:hover{background:var(--border);color:var(--text);}
+
+.ritual-modal-wrap{max-width:540px;margin:40px auto;background:var(--panel);border:1px solid var(--violet-bright);}
+.ritual-modal-wrap::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--violet-bright),transparent);}
+.rm-head{padding:16px 20px;border-bottom:1px solid rgba(74,58,122,.4);display:flex;align-items:center;justify-content:space-between;}
+.rm-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--violet-bright);}
+.rm-body{padding:20px;}
+.rm-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;}
+.rmf label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.rmf input,.rmf select,.rmf textarea{width:100%;background:#0a0a0e;border:1px solid rgba(74,58,122,.4);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:12px;padding:7px 10px;outline:none;transition:border-color .2s;}
+.rmf input:focus,.rmf select:focus,.rmf textarea:focus{border-color:var(--violet-bright);}
+.rmf.full{grid-column:1/-1;}
+.rmf textarea{resize:vertical;min-height:60px;font-family:'Crimson Pro',serif;font-size:13px;}
+.elem-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px;}
+.etog{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all .2s;}
+.etog.on{border-color:var(--violet-bright);background:var(--violet-glow);}
+.etog-icon{font-size:18px;}
+.etog-lbl{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;text-align:center;transition:color .2s;}
+.etog.on .etog-lbl{color:var(--violet-bright);}
+.rm-btns{display:flex;gap:8px;}
+.btn-propose{flex:2;padding:10px;background:rgba(74,58,122,.2);border:1px solid var(--violet-bright);color:var(--violet-bright);font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-propose:hover{background:var(--violet-glow);}
+
+.sm-wrap2{max-width:360px;margin:80px auto;background:var(--panel);border:1px solid var(--border-hi);padding:28px;position:relative;}
+.sm-wrap2::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sm-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.sm-btns{display:flex;gap:8px;margin-top:12px;}
+.conf-wrap{max-width:340px;margin:120px auto;background:var(--card);border:1px solid var(--crimson-bright);padding:28px;}
+.conf-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:var(--crimson-bright);margin-bottom:10px;text-transform:uppercase;}
+.conf-msg{font-family:'Crimson Pro',serif;font-size:15px;color:var(--text);line-height:1.6;margin-bottom:18px;}
+.conf-msg b{color:var(--text-bright);}
+.conf-btns{display:flex;gap:8px;}
+.btn-del2{flex:1;padding:9px;background:transparent;border:1px solid var(--crimson-bright);color:var(--crimson-bright);font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-del2:hover{background:var(--crimson-glow);}
+.btn-cxl2{flex:1;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.btn-cxl2:hover{background:var(--border);}
+
+/* ── NOVA MESA COM IA TOGGLE ── */
+.ia-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(155,89,182,.06);border:1px solid rgba(155,89,182,.2);margin-bottom:14px;}
+.ia-toggle-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--ai-glow);}
+.ia-switch{position:relative;width:36px;height:20px;}
+.ia-switch input{opacity:0;width:0;height:0;}
+.ia-slider{position:absolute;inset:0;background:var(--border);cursor:pointer;transition:.3s;border-radius:20px;}
+.ia-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:var(--text-dim);transition:.3s;border-radius:50%;}
+.ia-switch input:checked+.ia-slider{background:rgba(155,89,182,.5);}
+.ia-switch input:checked+.ia-slider::before{transform:translateX(16px);background:var(--ai-glow);}
+
+/* ── JOGADOR ── */
+#screen-jogador{background:var(--ink);}
+.j-layout{flex:1;display:flex;overflow:hidden;}
+.j-main{flex:1;overflow-y:auto;padding:16px 20px;}
+.setup-card{max-width:660px;margin:0 auto;background:var(--panel);border:1px solid var(--border-hi);padding:28px;position:relative;}
+.setup-card::before{content:'';position:absolute;top:-1px;left:25%;right:25%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.sch{font-family:'Cinzel',serif;font-size:17px;letter-spacing:4px;color:var(--text-bright);margin-bottom:20px;text-align:center;}
+.ss{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin:16px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2px;}
+.sf label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.sf input,.sf select{width:100%;background:#0a0a0e;border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:13px;padding:9px 10px;outline:none;transition:border-color .2s;}
+.sf input:focus,.sf select:focus{border-color:var(--gold);}
+.sf.full{grid-column:1/-1;}
+.skills-setup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;max-height:300px;overflow-y:auto;scrollbar-width:thin;border:1px solid var(--border);padding:8px;background:#0a0a0e;}
+.skill-toggle{display:flex;align-items:center;gap:7px;padding:5px 7px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.skill-toggle:hover{background:rgba(255,255,255,.03);}
+.skill-toggle.on{border-color:var(--gold-dim);background:var(--gold-glow);}
+.stk{width:11px;height:11px;border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;font-size:7px;flex-shrink:0;transition:all .2s;}
+.skill-toggle.on .stk{border-color:var(--gold);background:var(--gold);color:#000;}
+.stn{font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);}
+.skill-toggle.on .stn{color:var(--gold);}
+.sta{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin-left:auto;}
+.skills-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-top:5px;}
+
+/* Char card */
+.char-card{max-width:920px;margin:0 auto;display:none;animation:riseIn .6s cubic-bezier(.16,1,.3,1) both;}
+.char-card.vis{display:block;}
+.char-card-topbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.cc-main{display:grid;grid-template-columns:1fr 370px;background:var(--panel);border:1px solid var(--border-hi);overflow:hidden;position:relative;margin-bottom:12px;}
+.cc-main::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);z-index:2;}
+.cc-left{padding:26px 22px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:16px;}
+.cc-portrait-area{display:flex;gap:18px;align-items:flex-start;}
+.cc-portrait{width:130px;height:170px;border:1px solid var(--border-hi);background:var(--card);flex-shrink:0;overflow:hidden;position:relative;}
+.cc-portrait img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.cc-portrait-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;opacity:.25;background:linear-gradient(180deg,var(--violet-glow),transparent);}
+.cc-portrait-ov{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,rgba(14,13,18,.8));}
+.cc-bio{flex:1;}
+.cc-cname{font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--text-bright);line-height:1.1;letter-spacing:2px;margin-bottom:5px;}
+.cc-cclass{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.cc-quote{font-family:'Crimson Pro',serif;font-style:italic;font-size:14px;color:var(--text-dim);line-height:1.5;border-left:2px solid var(--violet-bright);padding-left:9px;margin-bottom:8px;}
+.cc-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.cc-tag{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;padding:3px 7px;border:1px solid var(--border-hi);color:var(--text-dim);text-transform:uppercase;}
+.cc-desc{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.cdi label{display:block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;}
+.cdi p{font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);}
+.cc-idb{background:var(--card);border:1px solid var(--border);padding:10px 12px;}
+.cc-idr{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-bottom:2px;}
+.cc-idr em{color:var(--text);}
+.cc-right{padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
+.cc-atitle{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.cc-atable{display:flex;flex-direction:column;gap:2px;}
+.cc-arow{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--card);border:1px solid var(--border);}
+.cc-aname{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--text);text-transform:uppercase;}
+.cc-aval{font-family:'Special Elite',cursive;font-size:19px;color:var(--text-bright);line-height:1;}
+.cc-arow.hi{border-color:var(--violet-bright);background:var(--violet-glow);}
+.cc-arow.hi .cc-aname{color:var(--violet-bright);}
+.cc-vitals{display:flex;flex-direction:column;gap:8px;}
+.cc-vit{background:var(--card);border:1px solid var(--border);padding:10px 12px;}
+.cc-vlbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+.cc-vlbl.v{color:var(--vida);}.cc-vlbl.s{color:var(--san);}
+.cc-vval{font-family:'Special Elite',cursive;font-size:22px;color:var(--text-bright);line-height:1;margin-bottom:5px;}
+.cc-vbar{height:5px;background:#0a0a0e;border:1px solid var(--border);}
+.cc-vfill{height:100%;transition:width .5s;}
+.cc-vfill.v{background:linear-gradient(90deg,#5a0010,var(--vida));}
+.cc-vfill.s{background:linear-gradient(90deg,#2a0a4a,var(--san));}
+.cc-pe{background:var(--card);border:1px solid var(--border);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;}
+.cc-pelbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--pe);}
+.cc-peval{font-family:'Special Elite',cursive;font-size:17px;color:var(--text-bright);}
+.cc-xtiles{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.cc-xt{background:var(--card);border:1px solid var(--border);padding:7px 9px;text-align:center;}
+.cc-xt label{display:block;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;}
+.cc-xt span{font-family:'Special Elite',cursive;font-size:15px;color:var(--text-bright);}
+.cc-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.cc-panel{background:var(--panel);border:1px solid var(--border-hi);overflow:hidden;}
+.cc-panel::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--border-glow),transparent);}
+.cc-ptitle{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px;}
+.cc-ptitle::before{content:'◈';color:var(--gold);font-size:8px;}
+.cc-inv-g{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:9px;}
+.cc-is{aspect-ratio:1;border:1px solid var(--border);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px;}
+.cc-is.has{border-color:var(--border-hi);}
+.cc-ie{font-size:16px;}
+.cc-in{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--text-dim);text-transform:uppercase;margin-top:2px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;}
+.cc-is.has .cc-in{color:var(--text);}
+.cc-skills-list{padding:8px 12px;max-height:220px;overflow-y:auto;scrollbar-width:thin;}
+.cc-sr{display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(42,40,56,.4);}
+.cc-sn{font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);flex:1;}
+.cc-sa{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);margin-right:4px;}
+.cc-sv{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-bright);}
+.cc-nb{padding:10px 14px;}
+.cc-nba{width:100%;min-height:155px;background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.12);color:var(--text);font-family:'Crimson Pro',serif;font-style:italic;font-size:14px;padding:10px;resize:vertical;outline:none;line-height:1.7;transition:border-color .2s;}
+.cc-nba:focus{border-color:var(--gold-dim);}
+.cc-nba::placeholder{color:var(--text-dim);}
+.cc-nbs{display:block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-top:5px;text-align:right;cursor:pointer;transition:color .2s;}
+.cc-nbs:hover{color:var(--gold);}
+.cc-rituals{padding:9px 12px;}
+.ritual-card-j{background:var(--card);border:1px solid var(--border);padding:9px 11px;margin-bottom:7px;}
+.rcj-name{font-family:'Cinzel',serif;font-size:13px;color:var(--text-bright);margin-bottom:4px;}
+.rcj-tags{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:3px;}
+.rcj-tag{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;padding:2px 5px;border:1px solid var(--border-hi);color:var(--text-dim);text-transform:uppercase;}
+.rcj-tag.elem{border-color:var(--violet);color:var(--violet-bright);}
+.rcj-desc{font-family:'Crimson Pro',serif;font-style:italic;font-size:13px;color:var(--text-dim);}
+.ritual-pending-j{background:rgba(184,134,11,.08);border:1px solid var(--pending);padding:9px 11px;margin-bottom:7px;}
+.rpj-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--pending);text-transform:uppercase;margin-bottom:3px;}
+.rpj-name{font-family:'Cinzel',serif;font-size:13px;color:var(--text-dim);}
+.btn-add-ritual{width:100%;padding:8px;background:rgba(74,58,122,.1);border:1px solid var(--violet);color:var(--violet-bright);font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:4px;}
+.btn-add-ritual:hover{background:var(--violet-glow);}
+
+.j-vital-section{background:var(--panel);border:1px solid var(--border-hi);margin-bottom:12px;}
+.j-vital-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px;}
+.j-vital-title::before{content:'◈';color:var(--vida);font-size:8px;}
+.j-vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;}
+.j-vit-card{background:var(--card);border:1px solid var(--border);padding:10px;}
+.j-vit-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block;}
+.j-vit-label.v{color:var(--vida);}.j-vit-label.s{color:var(--san);}.j-vit-label.pe{color:var(--pe);}
+.j-vit-val{font-family:'Special Elite',cursive;font-size:22px;color:var(--text-bright);margin-bottom:6px;text-align:center;}
+.j-vit-bar{height:4px;background:#0a0a0e;border:1px solid var(--border);margin-bottom:8px;}
+.j-vit-fill{height:100%;transition:width .5s;}
+.j-vit-fill.v{background:linear-gradient(90deg,#5a0010,var(--vida));}
+.j-vit-fill.s{background:linear-gradient(90deg,#2a0a4a,var(--san));}
+.j-vit-fill.pe{background:linear-gradient(90deg,#5a4000,var(--pe));}
+.j-vit-btns{display:flex;gap:4px;}
+.j-vit-btn{flex:1;padding:6px;background:transparent;border:1px solid var(--border-hi);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;text-align:center;}
+.j-vit-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+.pending-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--pending);text-align:center;margin-top:4px;min-height:14px;}
+
+.j-dice-section{background:var(--panel);border:1px solid var(--border-hi);margin-bottom:12px;}
+.j-dice-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px;}
+.j-dice-title::before{content:'◈';color:var(--gold);font-size:8px;}
+.j-dice-content{padding:12px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.j-dice-btn{padding:10px 16px;background:var(--card);border:1px solid var(--border-hi);color:var(--text);font-family:'Cinzel',serif;font-size:13px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.j-dice-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+.j-dice-result{font-family:'Special Elite',cursive;font-size:28px;color:var(--text-bright);margin-left:8px;}
+.j-dice-result.crit{color:var(--gold);text-shadow:0 0 10px var(--gold);}
+.j-dice-result.fail{color:var(--crimson-bright);}
+
+.j-edit-section{background:var(--panel);border:1px solid var(--border-hi);margin-bottom:12px;}
+.j-edit-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);padding:10px 14px 8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.j-edit-title-left{display:flex;align-items:center;gap:5px;}
+.j-edit-title-left::before{content:'◈';color:var(--violet-bright);font-size:8px;}
+.j-edit-toggle{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);transition:color .2s;}
+.j-edit-body{display:none;padding:14px;}
+.j-edit-body.open{display:block;}
+.j-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.j-edit-card{background:var(--card);border:1px solid var(--border);padding:10px 12px;}
+.j-edit-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:block;}
+.j-edit-label.attr{color:var(--violet-bright);}
+.j-edit-label.skill{color:var(--teal-bright);}
+.j-edit-label.stat{color:var(--gold);}
+.j-edit-row{display:flex;align-items:center;gap:6px;}
+.j-edit-val{font-family:'Special Elite',cursive;font-size:20px;color:var(--text-bright);flex:1;text-align:center;}
+.j-eb{width:28px;height:28px;border:1px solid var(--border-hi);background:transparent;color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.j-eb:hover{background:var(--violet-glow);border-color:var(--violet-bright);color:var(--violet-bright);}
+.j-edit-pend{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--pending);text-align:center;margin-top:4px;min-height:12px;animation:pulse 2s infinite;}
+.j-edit-text-row{display:flex;align-items:center;gap:6px;}
+.j-edit-input{flex:1;background:#0a0a0e;border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:12px;padding:6px 9px;outline:none;transition:border-color .2s;}
+.j-edit-input:focus{border-color:var(--violet-bright);}
+.j-edit-send{padding:6px 12px;background:transparent;border:1px solid var(--violet);color:var(--violet-bright);font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.j-edit-send:hover{background:var(--violet-glow);}
+.j-edit-section-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);margin:12px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.j-skills-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.j-skill-edit-card{background:var(--card);border:1px solid var(--border);padding:8px 10px;}
+.j-skill-edit-name{font-family:'Crimson Pro',serif;font-size:12px;color:var(--text);margin-bottom:5px;}
+
+.j-sidebar{width:var(--sidebar-w);border-left:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;flex-shrink:0;transition:width .3s ease,opacity .3s ease;overflow:hidden;}
+.j-sidebar.collapsed{width:0;opacity:0;border-left:none;}
+.j-sidebar-inner{width:var(--sidebar-w);height:100%;overflow-y:auto;scrollbar-width:thin;}
+.j-gp-row{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid rgba(42,40,56,.5);transition:background .15s;}
+.j-gp-row:hover{background:rgba(255,255,255,.015);}
+.j-gp-row.me{background:rgba(201,168,76,.04);}
+.j-gpa{width:32px;height:32px;border:1px solid var(--border-hi);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;flex-shrink:0;position:relative;}
+.j-gpa img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.medot{position:absolute;bottom:0;right:0;width:8px;height:8px;background:var(--gold);border:1px solid var(--ink);}
+.j-gpin{flex:1;min-width:0;}
+.j-gpname{font-family:'Cinzel',serif;font-size:12px;color:var(--text-bright);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.j-gpsub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;margin-top:1px;}
+.j-gpv{display:flex;flex-direction:column;gap:4px;min-width:110px;}
+.j-gpvr{display:flex;align-items:center;gap:5px;}
+.j-gpvl{font-family:'Share Tech Mono',monospace;font-size:8px;width:8px;flex-shrink:0;}
+.j-gpvl.v{color:var(--vida);}.j-gpvl.s{color:var(--san);}
+.j-gpbar{flex:1;height:3px;background:#0a0a0e;border:1px solid var(--border);}
+.j-gpfill{height:100%;transition:width .5s;}
+.j-gpfill.v{background:var(--vida);}.j-gpfill.s{background:var(--san);}
+.j-gpnum{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);width:30px;text-align:right;}
+.j-mp-card{padding:10px 14px;border-bottom:1px solid rgba(139,26,42,.3);}
+.j-mpc-head{display:flex;gap:8px;align-items:center;margin-bottom:5px;}
+.j-mpc-av{width:30px;height:30px;border:1px solid var(--crimson);background:rgba(139,26,42,.1);display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden;flex-shrink:0;}
+.j-mpc-av img{width:100%;height:100%;object-fit:cover;}
+.j-mpc-name{font-family:'Cinzel',serif;font-size:12px;color:#e8b4b8;}
+.j-mpc-type{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--crimson-bright);letter-spacing:1px;margin-top:1px;}
+.j-mpc-pv{display:flex;align-items:center;gap:5px;}
+.j-mpc-pvl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--crimson-bright);width:16px;}
+.j-mpc-pvb{flex:1;height:4px;background:rgba(139,26,42,.2);border:1px solid rgba(139,26,42,.3);}
+.j-mpc-pvf{height:100%;background:linear-gradient(90deg,#6b0a14,var(--crimson-bright));transition:width .5s;}
+.j-mpc-pvn{font-family:'Share Tech Mono',monospace;font-size:9px;color:#e8b4b8;}
+.gp-empty{padding:14px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-align:center;text-transform:uppercase;}
+
+@keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px);}to{opacity:1;}}
+::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border-hi);}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ LOGIN ════════════════ -->
+<div id="screen-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-sigil">
+      <div class="sigil-ring"><span style="font-size:28px;filter:drop-shadow(0 0 8px var(--violet-bright))">👁</span></div>
+      <div class="login-title">Ordem Paranormal</div>
+      <div class="login-sub">Mesa Virtual · Sistema de Campanha</div>
+    </div>
+    <div class="login-box">
+      <div class="login-tabs">
+        <button class="login-tab active" onclick="stab('m')">Mestre</button>
+        <button class="login-tab" onclick="stab('j')">Jogador</button>
+      </div>
+      <div class="lf on" id="lf-m">
+        <label class="fl">Senha do Mestre</label>
+        <input class="fi" type="password" id="m-pw" placeholder="••••••">
+        <button class="btn-rune" onclick="loginM()"><span>Acessar Painel</span></button>
+      </div>
+      <div class="lf" id="lf-j">
+        <label class="fl">Código da Mesa</label>
+        <input class="fi" type="text" id="j-code" placeholder="XKZM4R" style="text-transform:uppercase" maxlength="6">
+        <label class="fl">Seu Nome</label>
+        <input class="fi" type="text" id="j-nome" placeholder="Como quer ser chamado?">
+        <button class="btn-rune" onclick="loginJ()"><span>Entrar na Mesa</span></button>
+        <div style="text-align:center;margin:14px 0 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);">— ou —</div>
+        <button class="btn-solo-ia" onclick="loginSoloIA()"><span>🔮 Mesa Solo com IA Mestre</span></button>
+        <div class="btn-solo-ia-hint">Jogue sozinho — a IA narra e mestra para você</div>
+      </div>
+      <div class="ferr" id="lerr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ MESTRE MESAS ════════════════ -->
+<div id="screen-mestre" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand">👁 Ordem Paranormal</div>
+    <div class="topbar-right"><span class="badge bm">Mestre</span><button class="bg acc" onclick="openNM()">+ Nova Mesa</button><button class="bg" onclick="logout()">Sair</button></div>
+  </div>
+  <div class="pc">
+    <div class="ph"><div class="ptitle">◈ Minhas Mesas <em id="mc"></em></div></div>
+    <div class="mesas-grid" id="mg"><div class="empty-st">Nenhuma mesa criada.<br>Clique em + Nova Mesa.</div></div>
+  </div>
+</div>
+
+<!-- ════════════════ MESA (MESTRE) ════════════════ -->
+<div id="screen-mesa" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand">👁 <span id="mn-top">Mesa</span></div>
+    <div class="topbar-right">
+      <span class="badge bm">Mestre</span>
+      <button class="sidebar-toggle" id="sidebar-toggle-btn" onclick="toggleSidebar()">☰ Painel</button>
+      <button class="bg" onclick="voltarM()">← Mesas</button>
+      <button class="bg" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="mesa-layout">
+    <div class="mesa-main" id="mesa-main">
+      <div class="mesa-info-bar">
+        <div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-bottom:5px;">Código da Mesa</div>
+          <div style="display:flex;align-items:center;gap:10px;"><div class="mic-display" id="mcd">—</div><button class="bg" onclick="copyCode()">Copiar</button></div>
+        </div>
+        <div class="mic-hint">Compartilhe com seus jogadores.</div>
+      </div>
+      <div class="ph" style="margin-top:4px;"><div class="ptitle">◈ Agentes <em id="agc">0/6</em></div></div>
+      <div class="agents-grid" id="ag"><div class="empty-st">Aguardando jogadores...</div></div>
+      <div class="monsters-section">
+        <div class="ph" style="margin-bottom:12px;">
+          <div class="sec-title">Criaturas Invocadas <span id="monc-c" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);"></span></div>
+          <button class="bg" style="border-color:var(--crimson);color:var(--crimson-bright);" onclick="openMM()">+ Invocar</button>
+        </div>
+        <div class="monsters-grid" id="mon-g"><div class="empty-st" style="color:var(--crimson);opacity:.4;font-size:9px;">Nenhuma criatura.</div></div>
+      </div>
+    </div>
+    <div class="sidebar" id="m-sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Alterações Pendentes</div>
+          <div id="pend-list"><div class="gp-empty">Nenhuma alteração pendente.</div></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" style="color:var(--crimson-bright);">☽ Criaturas</div>
+          <div id="m-sidebar-monsters"><div class="gp-empty">Nenhuma criatura.</div></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Dados Rolados</div>
+          <div id="m-dice-log"><div class="gp-empty">Nenhuma rolagem.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ JOGADOR ════════════════ -->
+<div id="screen-jogador" class="screen">
+  <div class="topbar">
+    <div class="topbar-brand">👁 Ordem Paranormal</div>
+    <div class="topbar-right">
+      <span class="badge bj" id="j-tag">Agente</span>
+      <span class="badge bai" id="ai-badge" style="display:none">🔮 IA Mestre</span>
+      <button class="sidebar-toggle" id="ai-panel-btn" onclick="toggleAIPanel()" style="display:none;border-color:rgba(155,89,182,.4);color:var(--ai-glow);">🔮 O Mestre</button>
+      <button class="sidebar-toggle" id="j-sidebar-btn" onclick="toggleJSidebar()">☰ Mesa</button>
+      <button class="bg" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div class="j-layout">
+    <div class="j-main" id="j-main">
+      <div id="setup-area">
+        <div class="setup-card">
+          <div class="sch" id="setup-title">◈ Criar Personagem</div>
+          <div class="ss">Identificação</div>
+          <div class="sg">
+            <div class="sf"><label>Nome do Personagem</label><input class="fi" style="margin:0" type="text" id="s-cn"></div>
+            <div class="sf"><label>Origem</label><select class="fs" style="margin:0" id="s-or" onchange="onOrigemChange()"><option value="">Selecione...</option><option>Acadêmico</option><option>Agente de Saúde</option><option>Amnésico</option><option>Artista</option><option>Atleta</option><option>Chef</option><option>Criminoso</option><option>Cultista Arrependido</option><option>Desgarrado</option><option>Executivo</option><option>Expositor</option><option>Investigador</option><option>Lutador</option><option>Magnata</option><option>Mercenário</option><option>Militar</option><option>Operário</option><option>Policial</option><option>Religioso</option><option>Servidor Público</option><option>Teórico da Conspiração</option><option>TI</option><option>Trabalhador Rural</option><option>Trambiqueiro</option><option>Universitário</option><option>Vítima</option></select></div>
+            <div class="sf"><label>Classe</label><select class="fs" style="margin:0" id="s-cl" onchange="onClasseChange()"><option value="">Selecione...</option><option>Combatente</option><option>Especialista</option><option>Ocultista</option><option>Mundano (NEX 0%)</option></select></div>
+            <div class="sf"><label>Trilha <span style="color:var(--text-dim);font-size:8px;">(disponível NEX 10%+)</span></label>
+              <select class="fs" style="margin:0" id="s-tr" disabled>
+                <option value="">Bloqueado — NEX mínimo 10%</option>
+              </select>
+            </div>
+            <div class="sf"><label>NEX (%)</label>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button type="button" onclick="changeNEX(-5)" style="width:30px;height:36px;background:var(--card);border:1px solid var(--border-hi);color:var(--text);font-size:16px;cursor:pointer;flex-shrink:0;">−</button>
+                <input class="fi" style="margin:0;text-align:center;flex:1;" type="number" id="s-nx" value="5" min="0" max="99" readonly>
+                <button type="button" onclick="changeNEX(5)" id="btn-nex-plus" style="width:30px;height:36px;background:var(--card);border:1px solid var(--border-hi);color:var(--text);font-size:16px;cursor:pointer;flex-shrink:0;">+</button>
+              </div>
+            </div>
+            <div class="sf"><label>Deslocamento</label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="text" id="s-dl" value="9m / 6q" readonly></div>
+            <div class="sf full"><label>URL da Ilustração</label><input class="fi" style="margin:0" type="text" id="s-sp" placeholder="https://..."></div>
+            <div class="sf full"><label>Citação do Personagem</label><input class="fi" style="margin:0" type="text" id="s-qt" placeholder='"Uma frase que define seu personagem..."'></div>
+          </div>
+
+          <div class="ss">Atributos <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— 9 pontos totais: 1 pré-alocado em cada + 4 livres (máx 3 por atributo, mín 0 em apenas 1)</span></div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);">Pontos restantes:</span>
+            <span id="attrs-remaining" style="font-family:'Special Elite',cursive;font-size:22px;color:var(--gold);">4</span>
+          </div>
+          <div class="sg">
+            <div class="sf"><label>Agilidade (AGI) <span style="color:var(--text-dim);font-size:8px;">→ Defesa</span></label><input class="fi" style="margin:0" type="number" id="s-ag" value="1" min="0" max="3" oninput="updateAttrs()"></div>
+            <div class="sf"><label>Força (FOR) <span style="color:var(--text-dim);font-size:8px;">→ Dano/Carga</span></label><input class="fi" style="margin:0" type="number" id="s-fo" value="1" min="0" max="3" oninput="updateAttrs()"></div>
+            <div class="sf"><label>Intelecto (INT) <span style="color:var(--text-dim);font-size:8px;">→ Perícias extras</span></label><input class="fi" style="margin:0" type="number" id="s-in" value="1" min="0" max="3" oninput="updateAttrs()"></div>
+            <div class="sf"><label>Presença (PRE) <span style="color:var(--text-dim);font-size:8px;">→ PE</span></label><input class="fi" style="margin:0" type="number" id="s-pr" value="1" min="0" max="3" oninput="updateAttrs()"></div>
+            <div class="sf"><label>Vigor (VIG) <span style="color:var(--text-dim);font-size:8px;">→ PV</span></label><input class="fi" style="margin:0" type="number" id="s-vi" value="1" min="0" max="3" oninput="updateAttrs()"></div>
+          </div>
+
+          <div class="ss">Pontos Vitais <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— calculados por classe + atributos</span></div>
+          <div style="background:var(--card);border:1px solid rgba(155,89,182,.2);padding:10px 14px;margin-bottom:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:2;" id="vitals-formula">
+            Selecione classe e distribua atributos para ver o cálculo.
+          </div>
+          <div class="sg">
+            <div class="sf"><label>PV Máximo</label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="number" id="s-pv" value="0" readonly></div>
+            <div class="sf"><label>PE Máximo</label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="number" id="s-pe" value="0" readonly></div>
+            <div class="sf"><label>Sanidade Máxima</label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="number" id="s-sa" value="0" readonly></div>
+            <div class="sf"><label>Defesa <span style="color:var(--text-dim);font-size:8px;">(10 + AGI + Proteção)</span></label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="number" id="s-df" value="10" readonly></div>
+            <div class="sf"><label>Proteção <span style="color:var(--text-dim);font-size:8px;">(soma dos itens de proteção)</span></label><input class="fi" style="margin:0;opacity:.6;cursor:not-allowed;" type="number" id="s-pt" value="0" readonly></div>
+          </div>
+
+          <div class="ss">Perícias da Origem <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— 2 perícias fixas do seu passado</span></div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:10px 14px;margin-bottom:6px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;" id="origem-skills-info">
+            Selecione sua origem para ver as perícias concedidas.
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="origem-skills-tags"></div>
+
+          <div class="ss">Perícias Treinadas <span id="skills-limit-label" style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— selecione classe e origem primeiro</span></div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:8px 14px;margin-bottom:8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;" id="skills-calc-info">
+            Total = Origem (2 fixas) + Classe (base) + Intelecto (bônus)
+          </div>
+          <div class="skills-setup-grid" id="skills-setup-grid"></div>
+          <div class="skills-note" id="skills-note">0 perícias selecionadas</div>
+
+          <div class="ss">Habilidades Iniciais da Classe <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— concedidas automaticamente</span></div>
+          <div style="background:var(--card);border:1px solid rgba(155,89,182,.3);padding:12px 14px;margin-bottom:10px;font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);line-height:1.7;" id="class-abilities-info">
+            Selecione uma classe para ver as habilidades iniciais.
+          </div>
+
+          <div class="ss">Ataques Iniciais <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— definidos pela classe</span></div>
+          <div style="background:var(--card);border:1px solid rgba(139,26,42,.3);padding:12px 14px;margin-bottom:10px;font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);line-height:1.7;" id="class-attacks-info">
+            Selecione uma classe para ver os ataques disponíveis.
+          </div>
+
+          <div class="ss" id="rituais-setup-ss" style="display:none">Rituais Iniciais <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— Ocultista escolhe 3 rituais de 1º Círculo</span></div>
+          <div id="rituais-setup-area" style="display:none">
+            <div style="background:var(--card);border:1px solid rgba(74,58,122,.3);padding:8px 14px;margin-bottom:8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;" id="rituais-count-info">0/3 rituais selecionados</div>
+            <div id="rituais-setup-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:320px;overflow-y:auto;border:1px solid var(--border);padding:8px;background:#0a0a0e;"></div>
+          </div>
+
+          <div class="ss">Inventário Inicial <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— itens disponíveis para sua classe</span></div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:8px 14px;margin-bottom:8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;" id="inv-limits-info">
+            Recruta: Cat.0 ilimitado | Cat.I: 2 slots | Cat.II+: bloqueado
+          </div>
+          <div id="inv-setup-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:380px;overflow-y:auto;border:1px solid var(--border);padding:8px;background:#0a0a0e;margin-bottom:8px;"></div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;" id="inv-selected-info">0 itens selecionados | Proteção: 0 | Carga usada: 0/5</div>
+
+          <div class="ss">Carga Máxima <span style="color:var(--text-dim);font-size:9px;letter-spacing:2px;">— 5 + (Força × 5) espaços</span></div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+            <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);">Espaços disponíveis:</span>
+            <span id="carga-display" style="font-family:'Special Elite',cursive;font-size:22px;color:var(--gold);">5</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);">espaços (FOR 0)</span>
+          </div>
+
+          <div class="ss">Patente &amp; Prestígio Inicial</div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:10px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div style="text-align:center;"><div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:2px;margin-bottom:4px;">PATENTE</div><div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);">Recruta</div></div>
+            <div style="text-align:center;"><div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:2px;margin-bottom:4px;">PRESTÍGIO</div><div style="font-family:'Special Elite',cursive;font-size:18px;color:var(--text-bright);">0</div></div>
+            <div style="text-align:center;"><div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:2px;margin-bottom:4px;">CRÉDITO</div><div style="font-family:'Cinzel',serif;font-size:13px;color:var(--text);">Baixo (2)</div></div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);padding:8px 14px;margin-bottom:10px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;line-height:1.8;">
+            Recruta: Cat.0 Ilimitado | Cat.I: 2 itens | Cat.II-IV: Bloqueado
+          </div>
+
+          <div class="ss">Descrição</div>
+          <div class="sg">
+            <div class="sf"><label>Aparência</label><input class="fi" style="margin:0" type="text" id="s-ap"></div>
+            <div class="sf"><label>Personalidade</label><input class="fi" style="margin:0" type="text" id="s-ps"></div>
+            <div class="sf"><label>Histórico</label><input class="fi" style="margin:0" type="text" id="s-hi"></div>
+            <div class="sf"><label>Objetivo</label><input class="fi" style="margin:0" type="text" id="s-ob"></div>
+          </div>
+          <button class="btn-rune" onclick="saveChar()" style="margin-top:16px;" id="setup-submit-btn"><span id="setup-submit-lbl">Confirmar Personagem</span></button>
+          <div class="ferr" id="serr"></div>
+        </div>
+      </div>
+
+      <div class="char-card" id="char-card">
+        <div class="char-card-topbar">
+          <button class="bg" onclick="openEditChar()" style="border-color:var(--violet);color:var(--violet-bright);">✏ Editar Personagem</button>
+        </div>
+        <div class="j-vital-section">
+          <div class="j-vital-title">Pontos Atuais</div>
+          <div class="j-vitals-grid">
+            <div class="j-vit-card">
+              <span class="j-vit-label v">Vida</span>
+              <div class="j-vit-val" id="jv-vida-val">0/0</div>
+              <div class="j-vit-bar"><div class="j-vit-fill v" id="jv-vida-bar" style="width:100%"></div></div>
+              <div class="j-vit-btns">
+                <button class="j-vit-btn" onclick="proposeVital('vida',-1)">− 1</button>
+                <button class="j-vit-btn" onclick="proposeVital('vida',1)">+ 1</button>
+              </div>
+              <div class="pending-note" id="pn-vida"></div>
+            </div>
+            <div class="j-vit-card">
+              <span class="j-vit-label pe">PE</span>
+              <div class="j-vit-val" id="jv-pe-val">0/0</div>
+              <div class="j-vit-bar"><div class="j-vit-fill pe" id="jv-pe-bar" style="width:100%"></div></div>
+              <div class="j-vit-btns">
+                <button class="j-vit-btn" onclick="proposeVital('pe',-1)">− 1</button>
+                <button class="j-vit-btn" onclick="proposeVital('pe',1)">+ 1</button>
+              </div>
+              <div class="pending-note" id="pn-pe"></div>
+            </div>
+            <div class="j-vit-card">
+              <span class="j-vit-label s">Sanidade</span>
+              <div class="j-vit-val" id="jv-san-val">0/0</div>
+              <div class="j-vit-bar"><div class="j-vit-fill s" id="jv-san-bar" style="width:100%"></div></div>
+              <div class="j-vit-btns">
+                <button class="j-vit-btn" onclick="proposeVital('san',-1)">− 1</button>
+                <button class="j-vit-btn" onclick="proposeVital('san',1)">+ 1</button>
+              </div>
+              <div class="pending-note" id="pn-san"></div>
+            </div>
+          </div>
+        </div>
+        <div class="j-dice-section">
+          <div class="j-dice-title">Rolar Dados</div>
+          <div class="j-dice-content" style="flex-direction:column;align-items:flex-start;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:2px;">QTD:</span>
+              <select id="dice-qty" style="background:var(--card);border:1px solid var(--border-hi);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:13px;padding:7px 10px;outline:none;cursor:pointer;min-width:70px;">
+                <option value="1">1x</option><option value="2">2x</option><option value="3">3x</option>
+                <option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="10">10x</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="j-dice-btn" onclick="rollDice(4)">d4</button>
+              <button class="j-dice-btn" onclick="rollDice(6)">d6</button>
+              <button class="j-dice-btn" onclick="rollDice(8)">d8</button>
+              <button class="j-dice-btn" onclick="rollDice(10)">d10</button>
+              <button class="j-dice-btn" onclick="rollDice(12)">d12</button>
+              <button class="j-dice-btn" onclick="rollDice(20)">d20</button>
+              <button class="j-dice-btn" onclick="rollDice(100)">d100</button>
+            </div>
+            <div id="j-dice-result-area" style="display:none;background:var(--card);border:1px solid var(--border-hi);padding:10px 16px;min-width:200px;">
+              <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:6px;" id="j-dice-formula"></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;" id="j-dice-individual"></div>
+              <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;">Total: <span class="j-dice-result" id="j-dice-result"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="j-edit-section">
+          <div class="j-edit-title" onclick="toggleEditSection()">
+            <div class="j-edit-title-left" style="color:var(--violet-bright);">Editar Ficha</div>
+            <span class="j-edit-toggle" id="j-edit-toggle-icon">▼ abrir</span>
+          </div>
+          <div class="j-edit-body" id="j-edit-body">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--pending);letter-spacing:1px;margin-bottom:14px;padding:8px 10px;background:var(--pending-glow);border:1px solid var(--pending);">
+              ⏳ Todas as alterações aqui precisam de aprovação do mestre antes de entrar na ficha.
+            </div>
+            <div class="j-edit-section-title">Atributos</div>
+            <div class="j-edit-grid" id="j-attrs-edit"></div>
+            <div class="j-edit-section-title">Pontos Máximos</div>
+            <div class="j-edit-grid" id="j-maxpts-edit"></div>
+            <div class="j-edit-section-title">Combate &amp; Movimento</div>
+            <div class="j-edit-grid" id="j-combat-edit"></div>
+            <div class="j-edit-section-title">Identificação</div>
+            <div class="j-edit-grid" id="j-id-edit"></div>
+            <div class="j-edit-section-title">Perícias</div>
+            <div class="j-skills-edit-grid" id="j-skills-edit"></div>
+          </div>
+        </div>
+        <div class="cc-main">
+          <div class="cc-left">
+            <div class="cc-portrait-area">
+              <div class="cc-portrait">
+                <div class="cc-portrait-ph" id="cc-ph">🕵</div>
+                <img id="cc-img" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;">
+                <div class="cc-portrait-ov"></div>
+              </div>
+              <div class="cc-bio">
+                <div class="cc-cname" id="cc-name">—</div>
+                <div class="cc-cclass" id="cc-class">—</div>
+                <div class="cc-quote" id="cc-quote" style="display:none;"></div>
+                <div class="cc-tags" id="cc-tags"></div>
+              </div>
+            </div>
+            <div class="cc-desc" id="cc-desc"></div>
+            <div class="cc-idb" id="cc-id"></div>
+          </div>
+          <div class="cc-right">
+            <div><div class="cc-atitle">◈ Atributos</div><div class="cc-atable" id="cc-attrs"></div></div>
+            <div class="cc-vitals">
+              <div class="cc-vit"><div class="cc-vlbl v">Vida Máxima</div><div class="cc-vval" id="cc-vv">—</div><div class="cc-vbar"><div class="cc-vfill v" id="cc-vb" style="width:100%"></div></div></div>
+              <div class="cc-vit"><div class="cc-vlbl s">Sanidade Máxima</div><div class="cc-vval" id="cc-sv">—</div><div class="cc-vbar"><div class="cc-vfill s" id="cc-sb" style="width:100%"></div></div></div>
+              <div class="cc-pe"><span class="cc-pelbl">◈ PE</span><span class="cc-peval" id="cc-pe">—</span></div>
+            </div>
+            <div class="cc-xtiles" id="cc-xt"></div>
+          </div>
+        </div>
+        <div class="cc-bottom">
+          <div class="cc-panel"><div class="cc-ptitle">Inventário</div><div class="cc-inv-g" id="cc-inv"></div></div>
+          <div class="cc-panel"><div class="cc-ptitle">Perícias</div><div class="cc-skills-list" id="cc-sk"></div></div>
+          <div class="cc-panel"><div class="cc-ptitle">Caderno de Anotações</div><div class="cc-nb"><textarea class="cc-nba" id="cc-nb" placeholder="Anote pistas, observações..." onblur="saveNB()"></textarea><span class="cc-nbs" onclick="saveNB()">salvar ✓</span></div></div>
+        </div>
+        <div class="cc-panel" style="margin-bottom:100px;">
+          <div class="cc-ptitle" style="color:var(--violet-bright);">Rituais</div>
+          <div class="cc-rituals" id="cc-rituals">
+            <button class="btn-add-ritual" onclick="openRitualModal()">+ Propor Ritual ao Mestre</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="j-sidebar collapsed" id="j-sidebar">
+      <div class="j-sidebar-inner">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Agentes na Mesa</div>
+          <div id="j-gp-rows"><div class="gp-empty">Aguardando...</div></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" style="color:var(--crimson-bright);">☽ Criaturas</div>
+          <div id="j-monsters-list"><div class="gp-empty">Nenhuma criatura.</div></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Dados Rolados</div>
+          <div id="j-dice-log"><div class="gp-empty">Nenhuma rolagem.</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- PAINEL IA dentro do layout -->
+  </div>
+</div>
+
+<!-- figura mestre (hidden, mantida para compatibilidade JS) -->
+<div class="ai-mestre-container" id="ai-mestre-fig" style="display:none!important;" onclick="toggleAIPanel()">
+  <div class="ai-figure-wrap" id="ai-figure-wrap">
+    <div class="ai-figure-glow"></div>
+    <div class="ai-particle"></div>
+    <div class="ai-particle"></div>
+    <div class="ai-particle"></div>
+    <div class="ai-particle"></div>
+    <!-- SVG Figura Mística -->
+    <svg class="ai-figure-svg" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bodyGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#2a1a4a"/>
+          <stop offset="100%" stop-color="#0a0810"/>
+        </radialGradient>
+        <radialGradient id="faceGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#1a0f2e"/>
+          <stop offset="100%" stop-color="#0a0810"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Corpo/Manto -->
+      <ellipse cx="50" cy="105" rx="35" ry="30" fill="url(#bodyGrad)" opacity="0.95"/>
+      <path d="M20,90 Q15,115 12,130 L88,130 Q85,115 80,90 Q65,110 50,108 Q35,110 20,90Z" fill="url(#bodyGrad)"/>
+      <!-- Capuz -->
+      <path d="M22,60 Q18,40 20,25 Q30,5 50,3 Q70,5 80,25 Q82,40 78,60 Q70,72 50,73 Q30,72 22,60Z" fill="url(#bodyGrad)"/>
+      <!-- Borda do capuz - ouro -->
+      <path d="M22,60 Q18,40 20,25 Q30,5 50,3 Q70,5 80,25 Q82,40 78,60" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.8"/>
+      <!-- Rosto / sombra -->
+      <ellipse cx="50" cy="48" rx="18" ry="20" fill="url(#faceGrad)"/>
+      <!-- Olhos brilhantes -->
+      <ellipse cx="43" cy="44" rx="3.5" ry="2.5" fill="#9b59b6" filter="url(#glow)" opacity="0.9"/>
+      <ellipse cx="57" cy="44" rx="3.5" ry="2.5" fill="#9b59b6" filter="url(#glow)" opacity="0.9"/>
+      <ellipse cx="43" cy="44" rx="1.5" ry="1.2" fill="#e0c0ff"/>
+      <ellipse cx="57" cy="44" rx="1.5" ry="1.2" fill="#e0c0ff"/>
+      <!-- Boca — animada por JS -->
+      <g id="ai-mouth-g">
+        <!-- Boca fechada padrão -->
+        <path id="ai-mouth" d="M44,56 Q50,58 56,56" fill="none" stroke="#9b59b6" stroke-width="1.2" stroke-linecap="round"/>
+      </g>
+      <!-- Runas no manto -->
+      <text x="50" y="95" text-anchor="middle" font-size="7" fill="#4a3a7a" opacity="0.7" font-family="serif">ᚱᚢᚾᛖ</text>
+      <!-- Orbe na mão -->
+      <circle cx="72" cy="82" r="6" fill="none" stroke="#9b59b6" stroke-width="0.8" opacity="0.7"/>
+      <circle cx="72" cy="82" r="3" fill="#9b59b6" opacity="0.5" filter="url(#glow)"/>
+      <!-- Triângulo místico no peito -->
+      <polygon points="50,72 44,82 56,82" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="ai-label">O Mestre</div>
+  <div class="ai-status" id="ai-status-lbl">clique para falar</div>
+</div>
+
+
+
+<!-- Música toggle -->
+<button class="music-toggle" id="music-btn" onclick="toggleMusic()" style="display:none">♪ Música</button>
+
+<!-- ════════════════ MODAIS ════════════════ -->
+<!-- Ficha Modal Mestre -->
+<div class="ov" id="ov-ficha">
+  <div class="fm-wrap">
+    <div class="fm-head"><div><div class="fm-title" id="fm-title">—</div><div class="fm-sub" id="fm-sub"></div></div><button class="xb" onclick="closeOv('ov-ficha')">✕</button></div>
+    <div class="fm-body">
+      <div class="fc">
+        <div class="ms">Vida</div>
+        <div class="vr"><div class="vc2"><button class="vb2" onclick="chgV('vida',-1)">−</button><div class="vdis" id="mv-v">—</div><button class="vb2" onclick="chgV('vida',1)">+</button></div><div class="vbar"><div class="vfill v" id="mb-v" style="width:100%"></div></div></div>
+        <div class="ms">PE</div>
+        <div class="vr"><div class="vc2"><button class="vb2" onclick="chgV('pe',-1)">−</button><div class="vdis" id="mv-p">—</div><button class="vb2" onclick="chgV('pe',1)">+</button></div><div class="vbar"><div class="vfill pe" id="mb-p" style="width:100%"></div></div></div>
+        <div class="ms">Sanidade</div>
+        <div class="vr"><div class="vc2"><button class="vb2" onclick="chgV('san',-1)">−</button><div class="vdis" id="mv-s">—</div><button class="vb2" onclick="chgV('san',1)">+</button></div><div class="vbar"><div class="vfill s" id="mb-s" style="width:100%"></div></div></div>
+        <div class="ms">Atributos</div><div id="m-attrs"></div>
+        <div class="ms">Outros</div><div id="m-extras"></div>
+        <div class="ms">Descrição</div><div id="m-desc" style="font-family:'Crimson Pro',serif;font-size:13px;color:var(--text);line-height:1.6;"></div>
+      </div>
+      <div class="fc">
+        <div class="ms">Perícias</div>
+        <div class="sk-scroll" id="m-sk"></div>
+        <div class="rl2" id="m-rl"><div style="color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;">— ⬡ rolar —</div></div>
+        <div class="ms" style="margin-top:10px;">Rituais</div>
+        <div id="m-rituals"></div>
+      </div>
+      <div class="fc">
+        <div class="ms">Inventário</div>
+        <div class="inv-grid2" id="m-inv"></div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);">Clique num slot vazio para adicionar.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monster Modal -->
+<div class="ov" id="ov-mon">
+  <div class="mm-wrap">
+    <div class="mm-head"><div class="mm-title" id="mm-t">☽ Invocar Criatura</div><button class="xb" onclick="closeOv('ov-mon')">✕</button></div>
+    <div class="mm-body">
+      <div class="mm-grid">
+        <div class="mmf"><label>Nome</label><input type="text" id="mm-nome"></div>
+        <div class="mmf"><label>Tipo</label><input type="text" id="mm-tipo" placeholder="Ex: Morto-Vivo"></div>
+        <div class="mmf"><label>PV Máximo</label><input type="number" id="mm-pv" value="30" min="1"></div>
+        <div class="mmf"><label>Defesa</label><input type="number" id="mm-def" value="12" min="1"></div>
+        <div class="mmf"><label>Ataque</label><input type="text" id="mm-atk" placeholder="Ex: Mordida 2d6"></div>
+        <div class="mmf"><label>URL da Imagem</label><input type="text" id="mm-img" placeholder="https://..."></div>
+        <div class="mmf full"><label>Descrição</label><textarea id="mm-desc"></textarea></div>
+      </div>
+      <div class="rev-title">◈ O que revelar aos jogadores?</div>
+      <div class="rev-grid">
+        <div class="rtog on" data-k="nome" onclick="togRev(this)"><div class="rtog-chk">✓</div><span class="rtog-lbl">Nome</span></div>
+        <div class="rtog on" data-k="pv" onclick="togRev(this)"><div class="rtog-chk">✓</div><span class="rtog-lbl">Vida</span></div>
+        <div class="rtog on" data-k="img" onclick="togRev(this)"><div class="rtog-chk">✓</div><span class="rtog-lbl">Imagem</span></div>
+        <div class="rtog" data-k="tipo" onclick="togRev(this)"><div class="rtog-chk"></div><span class="rtog-lbl">Tipo</span></div>
+        <div class="rtog" data-k="def" onclick="togRev(this)"><div class="rtog-chk"></div><span class="rtog-lbl">Defesa</span></div>
+        <div class="rtog" data-k="desc" onclick="togRev(this)"><div class="rtog-chk"></div><span class="rtog-lbl">Descrição</span></div>
+      </div>
+      <div class="mm-btns"><button class="btn-invoke" onclick="invocar()">☽ Invocar na Mesa</button><button class="btn-cxl" onclick="closeOv('ov-mon')">Cancelar</button></div>
+      <div class="ferr" id="mm-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Ritual Modal -->
+<div class="ov" id="ov-ritual">
+  <div class="ritual-modal-wrap">
+    <div class="rm-head"><div class="rm-title">✦ Propor Ritual</div><button class="xb" onclick="closeOv('ov-ritual')">✕</button></div>
+    <div class="rm-body">
+      <div class="rm-grid">
+        <div class="rmf full"><label>Nome do Ritual</label><input type="text" id="rm-nome"></div>
+        <div class="rmf"><label>Círculo</label><select id="rm-circ"><option>1º</option><option>2º</option><option>3º</option><option>4º</option></select></div>
+        <div class="rmf"><label>Execução</label><input type="text" id="rm-exec" placeholder="Ex: Ação Padrão"></div>
+        <div class="rmf"><label>Alcance</label><input type="text" id="rm-alc"></div>
+        <div class="rmf"><label>Alvo</label><input type="text" id="rm-alvo"></div>
+        <div class="rmf"><label>Duração</label><input type="text" id="rm-dur"></div>
+        <div class="rmf full"><label>Resistência</label><input type="text" id="rm-res"></div>
+        <div class="rmf full"><label>Descrição do Efeito</label><textarea id="rm-desc"></textarea></div>
+      </div>
+      <div class="rev-title">◈ Elemento</div>
+      <div class="elem-grid">
+        <div class="etog" data-e="Conhecimento" onclick="togElem(this)"><div class="etog-icon">📚</div><div class="etog-lbl">Conhecimento</div></div>
+        <div class="etog" data-e="Energia" onclick="togElem(this)"><div class="etog-icon">⚡</div><div class="etog-lbl">Energia</div></div>
+        <div class="etog" data-e="Morte" onclick="togElem(this)"><div class="etog-icon">💀</div><div class="etog-lbl">Morte</div></div>
+        <div class="etog" data-e="Sangue" onclick="togElem(this)"><div class="etog-icon">🩸</div><div class="etog-lbl">Sangue</div></div>
+        <div class="etog" data-e="Medo" onclick="togElem(this)"><div class="etog-icon">👁</div><div class="etog-lbl">Medo</div></div>
+      </div>
+      <div class="rm-btns"><button class="btn-propose" onclick="propRitual()">✦ Enviar para Aprovação</button><button class="btn-cxl" onclick="closeOv('ov-ritual')">Cancelar</button></div>
+      <div class="ferr" id="rm-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Nova Mesa -->
+<div class="ov" id="ov-nm">
+  <div class="sm-wrap2">
+    <div class="sm-title">◈ Nova Mesa</div>
+    <label class="fl">Nome da Mesa</label><input class="fi" type="text" id="nm-n">
+    <label class="fl">Senha desta Mesa</label><input class="fi" type="password" id="nm-pw">
+    <!-- Toggle IA Mestre -->
+    <div class="ia-toggle-row">
+      <span class="ia-toggle-label">🔮 Mestre = IA</span>
+      <label class="ia-switch"><input type="checkbox" id="nm-ia-toggle"><span class="ia-slider"></span></label>
+    </div>
+    <div class="sm-btns"><button class="btn-rune" onclick="criarMesa()" style="flex:2"><span>Criar Mesa</span></button><button class="btn-cxl" onclick="closeOv('ov-nm')">Cancelar</button></div>
+    <div class="ferr" id="nm-err"></div>
+  </div>
+</div>
+
+<!-- Item Modal -->
+<div class="ov" id="ov-item">
+  <div class="sm-wrap2">
+    <div class="sm-title">◈ Adicionar Item</div>
+    <label class="fl">Nome</label><input class="fi" type="text" id="i-nome">
+    <label class="fl">Ícone</label>
+    <select class="fs" id="i-icon"><option value="🔫">🔫 Arma de Fogo</option><option value="🗡️">🗡️ Arma Branca</option><option value="📓">📓 Caderno</option><option value="🔦">🔦 Lanterna</option><option value="💊">💊 Medicamento</option><option value="📷">📷 Câmera</option><option value="🗝️">🗝️ Chave</option><option value="📡">📡 Equipamento</option><option value="🧪">🧪 Substância</option><option value="📜">📜 Documento</option><option value="🪬">🪬 Amuleto</option><option value="💼">💼 Maleta</option><option value="🔭">🔭 Binóculo</option><option value="🩹">🩹 Kit Médico</option><option value="📟">📟 Rádio</option><option value="📿">📿 Relíquia</option><option value="❓">❓ Misterioso</option></select>
+    <label class="fl">Categoria</label>
+    <select class="fs" id="i-cat"><option value="I">I — Leve</option><option value="II">II — Padrão</option><option value="III">III — Pesado</option><option value="IV">IV — Raro</option></select>
+    <div class="sm-btns"><button class="btn-rune" onclick="confirmItem()" style="flex:2"><span>Adicionar</span></button><button class="btn-cxl" onclick="closeOv('ov-item')">Cancelar</button></div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="ov" id="ov-conf">
+  <div class="conf-wrap">
+    <div class="conf-title">⚠ Confirmar</div>
+    <div class="conf-msg" id="conf-msg">Tem certeza?</div>
+    <div class="conf-btns"><button class="btn-del2" onclick="confirmAcao()">Confirmar</button><button class="btn-cxl2" onclick="closeOv('ov-conf');pendingAction=null;">Cancelar</button></div>
+  </div>
+</div>
+
+<script>
+const MASTER_PW='1234';
+const SKILLS=[
+  {n:'Acrobacia',a:'AGI'},{n:'Adestramento',a:'PRE',t:true},{n:'Artes',a:'PRE',t:true},
+  {n:'Atletismo',a:'FOR'},{n:'Atualidades',a:'INT'},{n:'Ciências',a:'INT',t:true},
+  {n:'Crime',a:'AGI',t:true},{n:'Diplomacia',a:'PRE'},{n:'Enganação',a:'PRE'},
+  {n:'Fortitude',a:'VIG'},{n:'Furtividade',a:'AGI'},{n:'Iniciativa',a:'AGI'},
+  {n:'Intimidação',a:'PRE'},{n:'Intuição',a:'PRE'},{n:'Investigação',a:'INT'},
+  {n:'Luta',a:'FOR'},{n:'Medicina',a:'INT'},{n:'Ocultismo',a:'INT',t:true},
+  {n:'Percepção',a:'PRE'},{n:'Pilotagem',a:'AGI',t:true},{n:'Pontaria',a:'AGI'},
+  {n:'Profissão',a:'INT',t:true},{n:'Reflexos',a:'AGI'},{n:'Religião',a:'PRE',t:true},
+  {n:'Sobrevivência',a:'INT'},{n:'Tática',a:'INT',t:true},{n:'Tecnologia',a:'INT',t:true},
+  {n:'Vontade',a:'PRE'},
+];
+const ATTRS=['Agilidade','Força','Intelecto','Presença','Vigor'];
+const AK={AGI:'Agilidade',FOR:'Força',INT:'Intelecto',PRE:'Presença',VIG:'Vigor'};
+
+let role=null,player=null,mesaId=null;
+let anthropicApiKey=localStorage.getItem('op_api_key')||'';
+let allPlayers={},allMesas={},allMonsters={};
+let activePk=null,activeSlot=null,pendingAction=null,editMonId=null;
+let monRevelas={nome:true,pv:true,img:true,tipo:false,def:false,desc:false};
+let selElem=null,selSkills={};
+let sidebarOpen=false,jSidebarOpen=false;
+let isEditing=false;
+let isMesaIA=false; // current mesa has AI master
+let aiPanelOpen=false;
+let aiConversationHistory=[];
+let isSpeaking=false;
+let musicOn=false;
+let audioCtx=null,musicNodes=[];
+let mouthAnim=null;
+
+// DB helpers
+function db(p){return window._ref(window._db,p);}
+async function dg(p){return(await window._get(db(p))).val();}
+async function ds(p,v){return window._set(db(p),v);}
+async function du(p,v){return window._update(db(p),v);}
+async function dr(p){return window._remove(db(p));}
+function dl(p,cb){window._onValue(db(p),s=>cb(s.exists()?s.val():null));}
+function sk(n){return n.toLowerCase().replace(/[^a-z0-9]/g,'_');}
+function rc(){return Math.random().toString(36).substring(2,8).toUpperCase();}
+function fe(id,msg){document.getElementById(id).textContent=msg;setTimeout(()=>{const el=document.getElementById(id);if(el)el.textContent='';},3500);}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+function stab(t){
+  document.querySelectorAll('.login-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='m')||(i===1&&t==='j')));
+  document.getElementById('lf-m').classList.toggle('on',t==='m');
+  document.getElementById('lf-j').classList.toggle('on',t==='j');
+}
+function defSk(){const s={};SKILLS.forEach(x=>s[sk(x.n)]={b:0,trained:false});return s;}
+
+document.addEventListener('dbReady',()=>{
+  buildSkillsSetup();
+  // Injeta campo de API key no login
+  injectApiKeyField();
+  const s=sessionStorage.getItem('op');
+  if(s){const d=JSON.parse(s);
+    if(d.role==='m')enterM();
+    else if(d.role==='j'){player=d.p;mesaId=d.mid;isMesaIA=d.ia||false;enterJ();}
+  }
+});
+
+function injectApiKeyField(){
+  const loginBox=document.querySelector('.login-box');
+  if(!loginBox)return;
+  const wrap=document.createElement('div');
+  wrap.style.cssText='margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border);';
+  wrap.innerHTML=`
+    <label class="fl" style="color:var(--ai-glow);">🔮 OpenAI API Key <span style="color:var(--text-dim);font-size:8px;">(IA Mestre)</span></label>
+    <input class="fi" type="password" id="api-key-input" placeholder="sk-..." style="margin-bottom:4px;border-color:rgba(155,89,182,.3);" value="${anthropicApiKey}">
+    <div style="font-family:\"Share Tech Mono\",monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;">Obtenha em <span style="color:var(--ai-glow)">platform.openai.com/api-keys</span></div>
+  `;
+  loginBox.insertBefore(wrap,loginBox.firstChild);
+  document.getElementById('api-key-input').addEventListener('change',e=>{
+    anthropicApiKey=e.target.value.trim();
+    localStorage.setItem('op_api_key',anthropicApiKey);
+  });
+}
+
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  document.getElementById('m-sidebar').classList.toggle('collapsed',!sidebarOpen);
+  document.getElementById('sidebar-toggle-btn').classList.toggle('open',sidebarOpen);
+}
+function toggleJSidebar(){
+  jSidebarOpen=!jSidebarOpen;
+  document.getElementById('j-sidebar').classList.toggle('collapsed',!jSidebarOpen);
+  document.getElementById('j-sidebar-btn').classList.toggle('open',jSidebarOpen);
+}
+
+// ══ REGRAS ORDEM PARANORMAL ══
+// Perícias base por classe (sem origem e sem intelecto)
+const SKILLS_LIMIT={Combatente:2,Especialista:4,Ocultista:3,'Mundano (NEX 0%)':0};
+
+// Perícias fixas por origem (2 por origem)
+const ORIGEM_SKILLS={
+  'Acadêmico':['Investigação','Ciências'],'Agente de Saúde':['Medicina','Intuição'],
+  'Amnésico':['Percepção','Vontade'],'Artista':['Artes','Enganação'],
+  'Atleta':['Atletismo','Acrobacia'],'Chef':['Profissão','Intuição'],
+  'Criminoso':['Crime','Furtividade'],'Cultista Arrependido':['Ocultismo','Religião'],
+  'Desgarrado':['Sobrevivência','Furtividade'],'Executivo':['Diplomacia','Intimidação'],
+  'Expositor':['Enganação','Atualidades'],'Investigador':['Investigação','Intuição'],
+  'Lutador':['Luta','Atletismo'],'Magnata':['Diplomacia','Atualidades'],
+  'Mercenário':['Pontaria','Tática'],'Militar':['Tática','Pontaria'],
+  'Operário':['Atletismo','Profissão'],'Policial':['Pontaria','Investigação'],
+  'Religioso':['Religião','Vontade'],'Servidor Público':['Diplomacia','Atualidades'],
+  'Teórico da Conspiração':['Ocultismo','Investigação'],'TI':['Tecnologia','Ciências'],
+  'Trabalhador Rural':['Sobrevivência','Adestramento'],'Trambiqueiro':['Enganação','Crime'],
+  'Universitário':['Atualidades','Ciências'],'Vítima':['Percepção','Reflexos'],
+};
+
+// Trilhas por classe
+const TRILHAS={
+  'Combatente':['Aniquilador','Comandante de Campo','Guerreiro','Operações Especiais','Tropa de Choque'],
+  'Especialista':['Atirador de Elite','Infiltrador','Médico de Campo','Negociador','Técnico'],
+  'Ocultista':['Conduíte','Flagelador','Graduado','Intuitivo','Lâmina Paranormal'],
+  'Mundano (NEX 0%)':[]
+};
+
+// Rituais de 1º Círculo por elemento
+const RITUAIS_1C=[
+  {n:'Amaldiçoar Arma',e:'Sangue'},{n:'Armadura de Sangue',e:'Sangue'},{n:'Arma Atroz',e:'Sangue'},
+  {n:'Destruição',e:'Sangue'},{n:'Ódio Incontrolável',e:'Sangue'},
+  {n:'Cicatrização',e:'Morte'},{n:'Consumir Manancial',e:'Morte'},{n:'Decadência',e:'Morte'},
+  {n:'Definhar',e:'Morte'},{n:'Ocultar Sinais',e:'Morte'},{n:'Espirais da Perdição',e:'Morte'},
+  {n:'Amaldiçoar Tecnologia',e:'Energia'},{n:'Coincidência Forçada',e:'Energia'},
+  {n:'Eletrocussão',e:'Energia'},{n:'Imagem Espelhada',e:'Energia'},{n:'Luz',e:'Energia'},
+  {n:'Tela de Ruído',e:'Energia'},{n:'Tecer Ilusão',e:'Energia'},
+  {n:'Compreensão Paranormal',e:'Conhecimento'},{n:'Distorcer Aparência',e:'Conhecimento'},
+  {n:'Enfeitiçar',e:'Conhecimento'},{n:'Esconder dos Olhos',e:'Conhecimento'},
+  {n:'Fortalecimento Sensorial',e:'Conhecimento'},{n:'Perturbação',e:'Conhecimento'},
+  {n:'Terceiro Olho',e:'Conhecimento'},{n:'Proteção Contra Rituais',e:'Medo'},
+];
+
+// Cores dos elementos
+const ELEM_COR={Sangue:'#c0392b',Morte:'#9b59b6',Energia:'#2980b9',Conhecimento:'#27ae60',Medo:'#e67e22'};
+
+// Catálogo de itens. protBonus = bônus de Proteção (campo separado da Defesa).
+// classes: 'todos','combatente','nao-combatente' (Esp/Ocultista só armas simples)
+const ITEM_CATALOG={
+  0:[
+    {name:'Faca',icon:'🗡️',espacos:1,rd:0,protBonus:0,tipo:'arma-simples',classes:'todos',desc:'Arma branca simples — 1d4 dano'},
+    {name:'Lanterna',icon:'🔦',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Equipamento básico'},
+    {name:'Kit de Primeiros Socorros',icon:'🩹',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Consumível de cura'},
+    {name:'Rações de Campo',icon:'🥫',espacos:0,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Consumível'},
+    {name:'Rádio Comunicador',icon:'📟',espacos:0,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Equipamento'},
+    {name:'Mochila de Expedição',icon:'🎒',espacos:0,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'+2 espaços de carga'},
+    {name:'Algemas',icon:'⛓️',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Equipamento tático'},
+    {name:'Corda (15m)',icon:'🪢',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Equipamento'},
+  ],
+  1:[
+    {name:'Pistola',icon:'🔫',espacos:1,rd:0,protBonus:0,tipo:'arma-simples',classes:'todos',desc:'Arma simples — 1d6 dano (Pontaria)'},
+    {name:'Revólver',icon:'🔫',espacos:1,rd:0,protBonus:0,tipo:'arma-simples',classes:'todos',desc:'Arma simples — 1d6 dano (Pontaria)'},
+    {name:'Espingarda',icon:'🔫',espacos:2,rd:0,protBonus:0,tipo:'arma-simples',classes:'todos',desc:'Arma simples — 2d6 dano (Pontaria)'},
+    {name:'Bastão',icon:'🪵',espacos:2,rd:0,protBonus:0,tipo:'arma-simples',classes:'todos',desc:'Arma branca simples — 1d6 dano (Luta)'},
+    {name:'Proteção Leve',icon:'🦺',espacos:2,rd:0,protBonus:5,tipo:'protecao',classes:'todos',desc:'Proteção Leve — Proteção +5'},
+    {name:'Escudo',icon:'🛡️',espacos:2,rd:0,protBonus:2,tipo:'protecao',classes:'combatente',desc:'Escudo — Proteção +2 (só Combatente)'},
+    {name:'Kit de Medicina',icon:'🏥',espacos:2,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Permite testes de Medicina avançados'},
+    {name:'Kit de Investigação',icon:'🔍',espacos:2,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Ferramentas de investigação'},
+    {name:'Câmera',icon:'📷',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Registro de evidências'},
+    {name:'Componentes Ritualísticos',icon:'📿',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Para rituais'},
+    {name:'Grimório',icon:'📓',espacos:1,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'Registro de rituais'},
+    {name:'Machado',icon:'🪓',espacos:2,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 1d8 dano (Luta) · só Combatente'},
+  ],
+  2:[
+    {name:'Fuzil de Assalto',icon:'🔫',espacos:3,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 2d6 dano (Pontaria) · só Combatente'},
+    {name:'Rifle de Precisão',icon:'🔫',espacos:3,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 2d8 dano (Pontaria) · só Combatente'},
+    {name:'Escopeta Tática',icon:'🔫',espacos:3,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 2d6 dano (Pontaria) · só Combatente'},
+    {name:'Espada',icon:'⚔️',espacos:2,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 1d8 dano (Luta) · só Combatente'},
+    {name:'Katana',icon:'⚔️',espacos:2,rd:0,protBonus:0,tipo:'arma-tatica',classes:'combatente',desc:'Arma tática — 1d8 dano (Luta) · só Combatente'},
+    {name:'Proteção Pesada',icon:'🛡️',espacos:5,rd:0,protBonus:10,tipo:'protecao',classes:'combatente',desc:'Proteção Pesada — Proteção +10 · só Combatente'},
+    {name:'Mochila Militar',icon:'🎒',espacos:0,rd:0,protBonus:0,tipo:'equip',classes:'todos',desc:'+5 espaços de carga'},
+    {name:'Colete Balístico',icon:'🦺',espacos:3,rd:2,protBonus:0,tipo:'protecao',classes:'todos',desc:'RD 2 contra dano físico'},
+  ],
+};
+
+// Habilidades iniciais por classe
+const CLASS_ABILITIES={
+  'Combatente': {
+    habilidades: '<b style="color:var(--gold)">⚔ Ataque Especial</b> — Ao atacar, gaste <b>2 PE</b> para receber <b>+5 no teste de ataque</b> OU <b>+5 no dano</b>. Pode dividir entre ataque e dano conforme evolui.<br><b style="color:var(--gold)">🛡 Proficiências</b> — Armas Simples, Armas Táticas, Proteções Leves, Proteções Pesadas e Escudos. Sem penalidade no uso.',
+    ataques: '<b>Armas Simples:</b> Faca (Luta, 1d4 dano), Pistola (Pontaria, 1d6 dano)<br><b>Armas Táticas (exclusivo):</b> Fuzil de Assalto (Pontaria, 2d6), Escopeta (Pontaria, 2d6), Espada (Luta, 1d8)<br><b>Fórmula:</b> Role X d20 (X = FOR ou AGI), pegue o maior, some Luta ou Pontaria.',
+    itens: [{name:'Pistola',icon:'🔫',cat:'I'},{name:'Colete Tático',icon:'🦺',cat:'I'},{name:'Faca',icon:'🗡️',cat:'I'},{name:'Kit Médico',icon:'🩹',cat:'I'},{name:'Lanterna',icon:'🔦',cat:'I'}]
+  },
+  'Especialista': {
+    habilidades: '<b style="color:var(--gold)">🔍 Eclético</b> — Gaste <b>2 PE</b> para ser considerado "Treinado" em qualquer perícia por um teste (exceto Luta e Pontaria).<br><b style="color:var(--gold)">⭐ Perito</b> — Escolha 2 perícias treinadas. Ao testar elas, gaste <b>2 PE</b> para somar <b>+1d6</b> ao resultado.<br><b>Proficiências:</b> Armas Simples e Proteções Leves apenas.',
+    ataques: '<b>Armas Simples apenas:</b> Pistola (Pontaria, 1d6), Revólver (Pontaria, 1d6), Faca (Luta, 1d4)<br><b>Nota:</b> O Especialista foca em suporte e investigação. Dano direto aumenta a partir de NEX 10% com trilhas (Infiltrador, Atirador de Elite).<br><b>Fórmula:</b> Role X d20 (X = FOR ou AGI), pegue o maior, some perícia.',
+    itens: [{name:'Pistola',icon:'🔫',cat:'I'},{name:'Kit de Investig.',icon:'📋',cat:'I'},{name:'Lanterna',icon:'🔦',cat:'I'},{name:'Kit Médico',icon:'🩹',cat:'I'},{name:'Rádio',icon:'📟',cat:'I'}]
+  },
+  'Ocultista': {
+    habilidades: '<b style="color:var(--violet-bright)">✦ Escolhido pelo Outro Lado</b> — Começa com <b>3 Rituais de 1º Círculo</b> à escolha. A cada NEX avançado, aprende um ritual novo.<br><b>Proficiências:</b> Apenas Armas Simples. <b>Sem proficiência com proteções</b> — vestir armaduras impõe penalidade em rituais e testes físicos.',
+    ataques: '<b>Rituais de Dano (principal):</b> Decadência (Morte, corpo-a-corpo), Eletrocussão (Energia, distância)<br><b>Plano B (armas simples):</b> Revólver (Pontaria, 1d6), Faca (Luta, 1d4)<br><b>Fórmula ritual:</b> Teste de Ocultismo (INT) + gaste PE do custo do ritual → dano conforme o ritual.',
+    itens: [{name:'Revólver',icon:'🔫',cat:'I'},{name:'Grimório',icon:'📓',cat:'I'},{name:'Componentes',icon:'📿',cat:'I'},{name:'Faca Ritual',icon:'🗡️',cat:'I'},{name:'Lanterna',icon:'🔦',cat:'I'}]
+  },
+  'Mundano (NEX 0%)': {
+    habilidades: '<b>Sem habilidades de classe.</b> Personagem comum, ainda não recrutado pela Ordo Realitas.<br>Acesso apenas às 2 perícias da Origem. Sem Patente, sem acesso ao arsenal da Ordem.<br><b>Ao atingir NEX 5%</b>, escolhe uma Classe e todos os valores base são substituídos pelos da nova classe.',
+    ataques: '<b>Apenas o que faz sentido pela Origem:</b> Armas improvisadas, objetos cotidianos.<br>Origens como Policial ou Militar podem ter arma de fogo padrão.<br><b>Sem</b> habilidades especiais de combate.',
+    itens: []
+  }
+};
+
+// Cálculo de vitais por classe — SAN é fixo por classe (sem PRE)
+function calcVitals(cl,vig,pre){
+  if(cl==='Combatente')       return{pv:20+vig, pe:2+pre,  san:12};
+  if(cl==='Especialista')     return{pv:16+vig, pe:3+pre,  san:16};
+  if(cl==='Ocultista')        return{pv:12+vig, pe:4+pre,  san:20};
+  if(cl==='Mundano (NEX 0%)') return{pv:8+vig,  pe:1+pre,  san:8};
+  return{pv:0,pe:0,san:0};
+}
+
+// NEX muda de 5 em 5
+function changeNEX(delta){
+  const cl=document.getElementById('s-cl')?.value||'';
+  if(cl==='Mundano (NEX 0%)')return;
+  const el=document.getElementById('s-nx');
+  let v=+el.value||5;
+  v=Math.max(5,Math.min(99,v+delta));
+  v=Math.round(v/5)*5;
+  el.value=v;
+  updateTrilhaSelect();
+}
+
+function updateAttrs(){
+  const ids=['s-ag','s-fo','s-in','s-pr','s-vi'];
+  // Atributos começam em 1, máx 3, mín 0 (só 1 pode ser 0)
+  let total=0;
+  const vals={};
+  ids.forEach(id=>{
+    let v=+document.getElementById(id).value;
+    v=Math.max(0,Math.min(3,v));
+    document.getElementById(id).value=v;
+    total+=v;
+    vals[id]=v;
+  });
+
+  // Máximo de pontos é 9 (1 base cada + 4 livres)
+  const rem=9-total;
+  const remEl=document.getElementById('attrs-remaining');
+  if(remEl){
+    remEl.textContent=rem;
+    remEl.style.color=rem<0?'var(--crimson-bright)':rem===0?'var(--teal-bright)':'var(--gold)';
+  }
+
+  const agi=vals['s-ag']||0;
+  const vig=vals['s-vi']||0;
+  const pre=vals['s-pr']||0;
+  const fo=vals['s-fo']||0;
+  const cl=document.getElementById('s-cl')?.value||'';
+
+  // Defesa
+  const dfEl=document.getElementById('s-df');
+  const invProtBonus=(selInventario||[]).reduce((a,i)=>a+(i.protBonus||0),0);
+  if(dfEl)dfEl.value=10+agi+invProtBonus;
+
+  // Carga = 5 + (FOR × 5)
+  const carga=5+(fo*5);
+  const cargaEl=document.getElementById('carga-display');
+  if(cargaEl)cargaEl.textContent=carga;
+  const cargaDesc=cargaEl?.parentElement?.querySelector('span:last-child');
+  if(cargaDesc)cargaDesc.textContent='espaços (FOR '+fo+')';
+
+  // Vitais calculados
+  if(cl){
+    const v=calcVitals(cl,vig,pre);
+    const pvEl=document.getElementById('s-pv');
+    const peEl=document.getElementById('s-pe');
+    const saEl=document.getElementById('s-sa');
+    if(pvEl)pvEl.value=v.pv;
+    if(peEl)peEl.value=v.pe;
+    if(saEl)saEl.value=v.san;
+    const fEl=document.getElementById('vitals-formula');
+    if(fEl){
+      const pvBase={Combatente:20,Especialista:16,Ocultista:12,'Mundano (NEX 0%)':8}[cl]||0;
+      const peBase={Combatente:2,Especialista:3,Ocultista:4,'Mundano (NEX 0%)':1}[cl]||0;
+      const sanBase={Combatente:12,Especialista:16,Ocultista:20,'Mundano (NEX 0%)':8}[cl]||0;
+      fEl.innerHTML='PV = '+pvBase+' + VIG('+vig+') = <b style="color:var(--vida)">'+v.pv+'</b> &nbsp;|&nbsp; PE = '+peBase+' + PRE('+pre+') = <b style="color:var(--pe)">'+v.pe+'</b> &nbsp;|&nbsp; SAN = <b style="color:var(--san)">'+sanBase+'</b> (fixo)';
+    }
+  }
+  buildSkillsSetup();
+  if(typeof updateInvInfo==='function')updateInvInfo();
+}
+
+function onOrigemChange(){
+  const or=document.getElementById('s-or').value;
+  const fixed=ORIGEM_SKILLS[or]||[];
+  const infoEl=document.getElementById('origem-skills-info');
+  const tagsEl=document.getElementById('origem-skills-tags');
+  if(infoEl)infoEl.textContent=or?'Perícias concedidas pela origem '+or+':':'Selecione sua origem para ver as perícias concedidas.';
+  if(tagsEl){
+    tagsEl.innerHTML=fixed.map(s=>'<span style="font-family:\'Share Tech Mono\',monospace;font-size:9px;padding:3px 8px;border:1px solid var(--gold-dim);color:var(--gold);background:rgba(201,168,76,.08);">'+s+'</span>').join('');
+  }
+  buildSkillsSetup();
+}
+
+function onClasseChange(){
+  const cl=document.getElementById('s-cl')?.value||'';
+  selSkills={};
+
+  // NEX automático
+  const nxEl=document.getElementById('s-nx');
+  const btnPlus=document.getElementById('btn-nex-plus');
+  if(cl==='Mundano (NEX 0%)'){
+    if(nxEl)nxEl.value=0;
+    if(btnPlus)btnPlus.disabled=true;
+  } else {
+    if(nxEl&&(+nxEl.value===0))nxEl.value=5;
+    if(btnPlus)btnPlus.disabled=false;
+  }
+
+  // Trilha — bloqueia se NEX < 10
+  updateTrilhaSelect();
+
+  // Habilidades e ataques
+  const info=CLASS_ABILITIES[cl];
+  const habEl=document.getElementById('class-abilities-info');
+  const atkEl=document.getElementById('class-attacks-info');
+  if(habEl)habEl.innerHTML=info?info.habilidades:'Selecione uma classe para ver as habilidades iniciais.';
+  if(atkEl)atkEl.innerHTML=info?info.ataques:'Selecione uma classe para ver os ataques disponíveis.';
+
+  // Rituais — só para Ocultista
+  const rituaisSS=document.getElementById('rituais-setup-ss');
+  const rituaisArea=document.getElementById('rituais-setup-area');
+  if(rituaisSS)rituaisSS.style.display=cl==='Ocultista'?'':'none';
+  if(rituaisArea)rituaisArea.style.display=cl==='Ocultista'?'':'none';
+  if(cl==='Ocultista')buildRituaisSetup();
+  else selRituais={};
+
+  // Inventário
+  buildInventarioSetup();
+  updateAttrs();
+}
+
+// Estado global de rituais e inventário selecionados
+let selRituais={};
+let selInventario=[];// array de objetos {name,icon,cat,espacos,rd,defBonus}
+
+function updateTrilhaSelect(){
+  const cl=document.getElementById('s-cl')?.value||'';
+  const nex=+document.getElementById('s-nx')?.value||0;
+  const sel=document.getElementById('s-tr');
+  if(!sel)return;
+  const trilhas=TRILHAS[cl]||[];
+  const unlocked=nex>=10&&trilhas.length>0;
+  sel.innerHTML='<option value="">'+(unlocked?'Selecione a trilha...':'Bloqueado — NEX mínimo 10%')+'</option>';
+  if(unlocked)trilhas.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});
+  sel.disabled=!unlocked;
+  sel.style.opacity=unlocked?'1':'0.5';
+}
+
+function buildRituaisSetup(){
+  selRituais={};
+  const g=document.getElementById('rituais-setup-grid');if(!g)return;
+  g.innerHTML='';
+  RITUAIS_1C.forEach(r=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:pointer;border:1px solid transparent;transition:all .15s;';
+    d.innerHTML='<div style="width:11px;height:11px;border:1px solid var(--border-hi);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:7px;" class="rtk"></div>'+
+      '<span style="font-family:\'Crimson Pro\',serif;font-size:13px;color:var(--text);flex:1;">'+r.n+'</span>'+
+      '<span style="font-family:\'Share Tech Mono\',monospace;font-size:8px;padding:1px 5px;border:1px solid;border-radius:0;background:transparent;" style="color:'+ELEM_COR[r.e]+';border-color:'+ELEM_COR[r.e]+'">'+r.e+'</span>';
+    // Cor do elemento no badge
+    const badge=d.querySelector('span:last-child');
+    badge.style.color=ELEM_COR[r.e];badge.style.borderColor=ELEM_COR[r.e];
+    const key=r.n;
+    d.onclick=()=>{
+      const cnt=Object.keys(selRituais).filter(k=>selRituais[k]).length;
+      if(!selRituais[key]&&cnt>=3){
+        d.style.borderColor='var(--crimson-bright)';
+        setTimeout(()=>d.style.borderColor='transparent',600);
+        const ci=document.getElementById('rituais-count-info');
+        if(ci){ci.textContent='⚠ Máximo 3 rituais!';setTimeout(()=>ci.textContent='3/3 rituais selecionados ✓',1500);}
+        return;
+      }
+      selRituais[key]=!selRituais[key];
+      const on=!!selRituais[key];
+      d.style.borderColor=on?ELEM_COR[r.e]:'transparent';
+      d.style.background=on?'rgba(74,58,122,.1)':'transparent';
+      d.querySelector('.rtk').textContent=on?'✓':'';
+      d.querySelector('.rtk').style.background=on?ELEM_COR[r.e]:'transparent';
+      d.querySelector('.rtk').style.borderColor=on?ELEM_COR[r.e]:'var(--border-hi)';
+      d.querySelector('.rtk').style.color=on?'#fff':'';
+      const c=Object.keys(selRituais).filter(k=>selRituais[k]).length;
+      const ci=document.getElementById('rituais-count-info');
+      if(ci)ci.textContent=c+'/3 rituais selecionados'+(c===3?' ✓':'');
+    };
+    g.appendChild(d);
+  });
+}
+
+function buildInventarioSetup(){
+  selInventario=[];
+  const g=document.getElementById('inv-setup-grid');if(!g)return;
+  g.innerHTML='';
+  const cl=document.getElementById('s-cl')?.value||'';
+  const isCombatente=cl==='Combatente';
+  // Recruta: Cat.0 ilimitado, Cat.I 2 slots, Cat.II+ bloqueado
+  const limites={0:99,1:2,2:0};
+
+  [0,1,2].forEach(cat=>{
+    const items=ITEM_CATALOG[cat]||[];
+    if(!items.length)return;
+    const header=document.createElement('div');
+    header.style.cssText='grid-column:1/-1;font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);padding:6px 2px 3px;border-bottom:1px solid var(--border);margin-top:6px;';
+    const catLabel=cat===0?'Categoria 0 — Básico (ilimitado)':cat===1?'Categoria I — Padrão (2 slots)':'Categoria II — Tático (bloqueado: Recruta)';
+    header.textContent=catLabel;
+    g.appendChild(header);
+
+    items.forEach(item=>{
+      const catLocked=limites[cat]===0;
+      // Trava por proficiência de classe
+      const classLocked=item.classes==='combatente'&&!isCombatente;
+      const locked=catLocked||classLocked;
+
+      const d=document.createElement('div');
+      d.style.cssText='display:flex;align-items:center;gap:6px;padding:6px 8px;cursor:'+(locked?'not-allowed':'pointer')+';border:1px solid var(--border);opacity:'+(locked?'0.3':'1')+';transition:all .15s;background:var(--card);position:relative;';
+
+      d.innerHTML='<div class="itk" style="width:11px;height:11px;border:1px solid var(--border-hi);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:7px;"></div>'+
+        '<span style="font-size:16px;">'+item.icon+'</span>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-family:\"Cinzel\",serif;font-size:11px;color:var(--text-bright);">'+item.name+'</div>'+
+          '<div style="font-family:\"Share Tech Mono\",monospace;font-size:8px;color:var(--text-dim);">'+item.desc+(item.espacos>0?' · '+item.espacos+' esp.':'')+'</div>'+
+        '</div>';
+
+      // Badge proteção
+      if(item.protBonus>0){
+        const b=document.createElement('span');
+        b.style.cssText='font-family:\'Share Tech Mono\',monospace;font-size:8px;color:var(--teal-bright);border:1px solid var(--teal-bright);padding:1px 4px;white-space:nowrap;';
+        b.textContent='PROT +'+item.protBonus;
+        d.appendChild(b);
+      }
+      // Badge RD
+      if(item.rd>0){
+        const b=document.createElement('span');
+        b.style.cssText='font-family:\'Share Tech Mono\',monospace;font-size:8px;color:var(--violet-bright);border:1px solid var(--violet);padding:1px 4px;white-space:nowrap;';
+        b.textContent='RD '+item.rd;
+        d.appendChild(b);
+      }
+      // Badge "só Combatente"
+      if(classLocked){
+        const b=document.createElement('span');
+        b.style.cssText='font-family:\'Share Tech Mono\',monospace;font-size:7px;color:var(--crimson-bright);border:1px solid var(--crimson);padding:1px 4px;white-space:nowrap;';
+        b.textContent='SÓ COMBATENTE';
+        d.appendChild(b);
+      }
+
+      if(!locked){
+        d.onclick=()=>{
+          const key=cat+'_'+item.name;
+          const idx=selInventario.findIndex(i=>i._key===key);
+          if(idx>=0){
+            selInventario.splice(idx,1);
+            d.style.borderColor='var(--border)';d.style.background='var(--card)';
+            const itk=d.querySelector('.itk');
+            itk.textContent='';itk.style.background='transparent';itk.style.borderColor='var(--border-hi)';
+          } else {
+            const catCount=selInventario.filter(i=>i._cat===cat).length;
+            if(cat>0&&catCount>=limites[cat]){
+              d.style.borderColor='var(--crimson-bright)';
+              setTimeout(()=>d.style.borderColor='var(--border)',700);
+              const si=document.getElementById('inv-selected-info');
+              if(si){const old=si.innerHTML;si.innerHTML='<b style="color:var(--crimson-bright)">⚠ Limite de Cat.'+cat+': '+limites[cat]+' slot(s) para Recruta</b>';setTimeout(()=>si.innerHTML=old,2000);}
+              return;
+            }
+            selInventario.push({...item,_key:key,_cat:cat});
+            d.style.borderColor='var(--gold-dim)';d.style.background='rgba(201,168,76,.06)';
+            const itk=d.querySelector('.itk');
+            itk.textContent='✓';itk.style.background='var(--gold)';itk.style.borderColor='var(--gold)';itk.style.color='#000';
+          }
+          updateInvInfo();
+        };
+      }
+      g.appendChild(d);
+    });
+  });
+  updateInvInfo();
+}
+
+function updateInvInfo(){
+  const fo=+document.getElementById('s-fo')?.value||0;
+  const agi=+document.getElementById('s-ag')?.value||0;
+  const cargaMax=5+(fo*5);
+  const cargaUsada=(selInventario||[]).reduce((a,i)=>a+i.espacos,0);
+  const protBonus=(selInventario||[]).reduce((a,i)=>a+(i.protBonus||0),0);
+  const rdTotal=(selInventario||[]).reduce((a,i)=>a+(i.rd||0),0);
+  const defTotal=10+agi+protBonus;
+
+  // Atualiza campos defesa e proteção
+  const dfEl=document.getElementById('s-df');if(dfEl)dfEl.value=defTotal;
+  const ptEl=document.getElementById('s-pt');if(ptEl)ptEl.value=protBonus>0?String(protBonus):'0';
+
+  // Atualiza info bar
+  const el=document.getElementById('inv-selected-info');
+  if(el)el.innerHTML=
+    '<b style="color:var(--gold)">'+(selInventario||[]).length+'</b> itens &nbsp;|&nbsp;'+
+    ' DEF: <b style="color:var(--teal-bright)">'+defTotal+'</b> <span style="font-family:Share Tech Mono,monospace;font-size:8px;color:var(--text-dim)">(10+AGI'+agi+(protBonus>0?'+PROT'+protBonus:'')+')</span>'+
+    (protBonus>0?' &nbsp;|&nbsp; Proteção: <b style="color:var(--teal-bright)">'+protBonus+'</b>':'')+
+    (rdTotal>0?' &nbsp;|&nbsp; RD: <b style="color:var(--teal-bright)">'+rdTotal+'</b>':'')+
+    ' &nbsp;|&nbsp; Carga: <b style="color:'+(cargaUsada>cargaMax?'var(--crimson-bright)':'var(--text)')+'">'+cargaUsada+'/'+cargaMax+'</b>';
+}
+
+function getTotalSkillsLimit(){
+  const cl=document.getElementById('s-cl')?.value||'';
+  const int=+document.getElementById('s-in')?.value||0;
+  const base=SKILLS_LIMIT[cl]??0;
+  return base+int;
+}
+
+function buildSkillsSetup(){
+  const g=document.getElementById('skills-setup-grid');if(!g)return;
+  g.innerHTML='';
+  const cl=document.getElementById('s-cl')?.value||'';
+  const or=document.getElementById('s-or')?.value||'';
+  const int=+document.getElementById('s-in')?.value||0;
+  const base=SKILLS_LIMIT[cl]??-1;
+  const total=base+int;
+  const origemFixed=ORIGEM_SKILLS[or]||[];
+
+  const limitLabel=document.getElementById('skills-limit-label');
+  if(limitLabel){
+    if(cl&&or)limitLabel.textContent='— escolha '+total+' (Classe: '+base+' + INT: '+int+')';
+    else if(cl)limitLabel.textContent='— selecione a origem também';
+    else limitLabel.textContent='— selecione classe e origem primeiro';
+  }
+  const calcInfo=document.getElementById('skills-calc-info');
+  if(calcInfo&&cl&&or)calcInfo.innerHTML='Origem (2 fixas: '+origemFixed.join(', ')+') + Classe ('+base+') + INT ('+int+') = <b style="color:var(--gold)">'+(2+total)+'</b> perícias no total';
+
+  SKILLS.forEach(sk2=>{
+    const isFixed=origemFixed.includes(sk2.n);
+    const d=document.createElement('div');
+    d.className='skill-toggle'+(isFixed?' on':'');
+    d.dataset.sk=sk(sk2.n);
+    if(isFixed){
+      d.innerHTML='<div class="stk" style="background:var(--gold);border-color:var(--gold);color:#000">✓</div><span class="stn" style="color:var(--gold)">'+sk2.n+(sk2.t?'*':'')+'</span><span class="sta">'+sk2.a+'</span><span style="font-family:\'Share Tech Mono\',monospace;font-size:7px;color:var(--gold-dim);margin-left:4px;">ORIGEM</span>';
+      d.style.cursor='default';
+      return g.appendChild(d);
+    }
+    if(selSkills[sk(sk2.n)])d.classList.add('on');
+    d.innerHTML='<div class="stk">'+(selSkills[sk(sk2.n)]?'✓':'')+'</div><span class="stn">'+sk2.n+(sk2.t?'*':'')+'</span><span class="sta">'+sk2.a+'</span>';
+    d.onclick=()=>{
+      if(!cl||!or)return;
+      const key=sk(sk2.n);
+      const currentCount=Object.keys(selSkills).filter(k=>selSkills[k]).length;
+      if(!selSkills[key]&&currentCount>=total){
+        d.style.borderColor='var(--crimson-bright)';
+        setTimeout(()=>d.style.borderColor='',600);
+        const sn=document.getElementById('skills-note');
+        if(sn){sn.textContent='⚠ Limite de '+total+' perícias adicionais atingido!';setTimeout(()=>{sn.textContent=currentCount+'/'+total+' perícias escolhidas';},1500);}
+        return;
+      }
+      selSkills[key]=!selSkills[key];
+      d.classList.toggle('on',!!selSkills[key]);
+      d.querySelector('.stk').textContent=selSkills[key]?'✓':'';
+      const cnt=Object.keys(selSkills).filter(k=>selSkills[k]).length;
+      const sn=document.getElementById('skills-note');
+      if(sn)sn.textContent=cnt+'/'+total+' perícias escolhidas'+(cnt===total?' ✓':'');
+    };
+    g.appendChild(d);
+  });
+  const cnt=Object.keys(selSkills).filter(k=>selSkills[k]).length;
+  const sn=document.getElementById('skills-note');
+  if(sn&&cl&&or)sn.textContent=cnt+'/'+total+' perícias escolhidas'+(cnt===total?' ✓':'');
+}
+
+// Quando classe ou origem muda via listener genérico (fallback)
+document.addEventListener('change',e=>{
+  if(e.target.id==='s-cl'){selSkills={};onClasseChange();}
+  if(e.target.id==='s-or'){onOrigemChange();}
+});
+
+// ════════════ LOGIN ════════════
+async function loginM(){
+  const pw=document.getElementById('m-pw').value;
+  if(pw!==MASTER_PW)return fe('lerr','Senha incorreta.');
+  sessionStorage.setItem('op',JSON.stringify({role:'m'}));enterM();
+}
+
+async function loginJ(){
+  const code=document.getElementById('j-code').value.trim().toUpperCase();
+  const nome=document.getElementById('j-nome').value.trim();
+  if(!code)return fe('lerr','Informe o código da mesa.');
+  if(!nome)return fe('lerr','Informe seu nome.');
+  const mesas=await dg('mesas');if(!mesas)return fe('lerr','Código inválido.');
+  let mid=null,mesaData=null;
+  Object.entries(mesas).forEach(([k,v])=>{if(v.code===code){mid=k;mesaData=v;}});
+  if(!mid)return fe('lerr','Código inválido.');
+  mesaId=mid;player=sk(nome);
+  isMesaIA=!!mesaData?.isMesaIA;
+  const ex=await dg('mesas/'+mid+'/players/'+player);
+  if(!ex){
+    await ds('mesas/'+mid+'/players/'+player,{
+      nome,key:player,hasChar:false,
+      vida:{cur:0,max:0},pe:{cur:0,max:0},san:{cur:0,max:0},
+      inventory:Array(8).fill(null),skills:defSk(),
+      attrs:{Agilidade:0,Força:0,Intelecto:0,Presença:0,Vigor:0},
+      classe:'',origem:'',trilha:'',nex:5,desl:'9m/6q',defesa:10,protecao:'',
+      aparencia:'',personalidade:'',historico:'',objetivo:'',quote:'',notebook:'',rituals:{},pendingChanges:{}
+    });
+  }
+  sessionStorage.setItem('op',JSON.stringify({role:'j',p:player,mid,ia:isMesaIA}));enterJ();
+}
+
+async function loginSoloIA(){
+  const nome=document.getElementById('j-nome').value.trim();
+  if(!nome)return fe('lerr','Informe seu nome para a mesa solo.');
+  // Cria mesa automaticamente com IA
+  const mid='m_solo_'+Date.now();
+  const code=rc();
+  await ds('mesas/'+mid,{
+    name:'Mesa Solo — '+nome,
+    senha:'solo',
+    code,
+    created:Date.now(),
+    isMesaIA:true,
+    players:{},
+    monsters:{}
+  });
+  mesaId=mid;player=sk(nome);isMesaIA=true;
+  await ds('mesas/'+mid+'/players/'+player,{
+    nome,key:player,hasChar:false,
+    vida:{cur:0,max:0},pe:{cur:0,max:0},san:{cur:0,max:0},
+    inventory:Array(8).fill(null),skills:defSk(),
+    attrs:{Agilidade:0,Força:0,Intelecto:0,Presença:0,Vigor:0},
+    classe:'',origem:'',trilha:'',nex:5,desl:'9m/6q',defesa:10,protecao:'',
+    aparencia:'',personalidade:'',historico:'',objetivo:'',quote:'',notebook:'',rituals:{},pendingChanges:{}
+  });
+  sessionStorage.setItem('op',JSON.stringify({role:'j',p:player,mid,ia:true}));
+  enterJ();
+}
+
+function logout(){sessionStorage.removeItem('op');role=null;player=null;mesaId=null;isMesaIA=false;stopMusic();show('screen-login');}
+
+// ════════════ MESTRE ════════════
+function enterM(){role='m';show('screen-mestre');dl('mesas',v=>{allMesas=v||{};renderMesas();});}
+
+function renderMesas(){
+  const g=document.getElementById('mg');const keys=Object.keys(allMesas);
+  document.getElementById('mc').textContent=keys.length;
+  if(!keys.length){g.innerHTML='<div class="empty-st">Nenhuma mesa criada.</div>';return;}
+  g.innerHTML='';
+  keys.forEach(mid=>{
+    const m=allMesas[mid];
+    const ps=m.players?Object.values(m.players).filter(p=>p.hasChar):[];
+    const pips=ps.slice(0,6).map(p=>'<div class="mc-pip">'+(p.sprite?'<img src="'+p.sprite+'">':"🕵")+'</div>').join('');
+    const c=document.createElement('div');c.className='mesa-card'+(m.isMesaIA?' ia-mesa':'');
+    c.innerHTML='<div class="mc-head"><div><div class="mc-name">'+m.name+'</div>'+(m.isMesaIA?'<div class="ia-badge-mesa">🔮 IA Mestre</div>':'')+'</div><div class="mc-code">'+m.code+'</div></div><div class="mc-body"><div class="mc-pips">'+(pips||'<span style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--text-dim)">sem agentes</span>')+'</div><div class="mc-stat"><em>'+ps.length+'/6</em> agentes</div><div class="mc-acts"><button class="btn-open" onclick="abrirMesa(\''+mid+'\')">Abrir →</button><button class="btn-del" onclick="confDel(event,\'mesa\',\''+mid+'\',\''+m.name+'\')">Apagar</button></div></div>';
+    g.appendChild(c);
+  });
+}
+
+function openNM(){document.getElementById('nm-n').value='';document.getElementById('nm-pw').value='';document.getElementById('nm-ia-toggle').checked=false;openOv('ov-nm');}
+
+async function criarMesa(){
+  const n=document.getElementById('nm-n').value.trim();const pw=document.getElementById('nm-pw').value.trim();
+  if(!n)return fe('nm-err','Informe o nome.');if(!pw)return fe('nm-err','Informe uma senha.');
+  const isIA=document.getElementById('nm-ia-toggle').checked;
+  const mid='m_'+Date.now();
+  await ds('mesas/'+mid,{name:n,senha:pw,code:rc(),created:Date.now(),isMesaIA:isIA,players:{},monsters:{}});
+  closeOv('ov-nm');
+}
+
+function abrirMesa(mid){
+  mesaId=mid;const m=allMesas[mid];
+  document.getElementById('mn-top').textContent=m.name;
+  document.getElementById('mcd').textContent=m.code;
+  show('screen-mesa');
+  dl('mesas/'+mid+'/players',v=>{allPlayers=v||{};renderAgents();renderSidebarPending();});
+  dl('mesas/'+mid+'/monsters',v=>{allMonsters=v||{};renderMonsters();renderSidebarMonsters();});
+  dl('mesas/'+mid+'/diceLog',v=>{renderDiceLog(v||{});});
+}
+function voltarM(){mesaId=null;show('screen-mestre');}
+function copyCode(){const c=document.getElementById('mcd').textContent;navigator.clipboard.writeText(c).then(()=>{const b=event.target;b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500);});}
+
+// ════════════ AGENTS ════════════
+function renderAgents(){
+  const g=document.getElementById('ag');const keys=Object.keys(allPlayers);
+  document.getElementById('agc').textContent=keys.length+'/6';
+  if(!keys.length){g.innerHTML='<div class="empty-st">Aguardando jogadores...</div>';return;}
+  g.innerHTML='';
+  keys.forEach(k=>{
+    const p=allPlayers[k];
+    const vc=p.vida?.cur??0,vm=p.vida?.max??0,sc=p.san?.cur??0,sm=p.san?.max??0;
+    const inv=(p.inventory||Array(8).fill(null)).slice(0,8);
+    const hasPend=p.pendingChanges&&Object.keys(p.pendingChanges).length>0;
+    const c=document.createElement('div');c.className='ac';
+    c.innerHTML='<div class="ac-head" onclick="openFicha(\''+k+'\')"><div class="ac-av">'+(p.sprite?'<img src="'+p.sprite+'">':"🕵")+'</div><div style="flex:1;min-width:0"><div class="ac-name">'+(p.charname||p.nome)+'</div><div class="ac-sub">'+(p.classe||'—')+' · '+(p.origem||'—')+'</div><div class="ac-nex">NEX '+(p.nex||5)+'% '+(hasPend?'<span class="sa-pend">● pendente</span>':'')+'</div></div></div><div class="ac-bars"><div class="br"><label class="v">Vida '+vc+'/'+vm+'</label><div class="mb"><div class="mf v" style="width:'+Math.round(Math.max(0,vm?vc/vm*100:0))+'%"></div></div></div><div class="br"><label class="s">Sanidade '+sc+'/'+sm+'</label><div class="mb"><div class="mf s" style="width:'+Math.round(Math.max(0,sm?sc/sm*100:0))+'%"></div></div></div></div><div class="ac-inv">'+inv.map(s=>'<div class="ip '+(s?'has':'')+'">'+( s?s.icon:'')+'</div>').join('')+'</div><div class="ac-acts"><button class="aab" onclick="openFicha(\''+k+'\')">✏ Editar</button><button class="aab red" onclick="confDel(null,\'jogador\',\''+k+'\',\''+(p.charname||p.nome)+'\')">🗑 Apagar</button></div>';
+    g.appendChild(c);
+  });
+}
+
+function renderSidebarPending(){
+  const c=document.getElementById('pend-list');c.innerHTML='';
+  let found=false;
+  Object.keys(allPlayers).forEach(pk=>{
+    const p=allPlayers[pk];if(!p.pendingChanges)return;
+    Object.entries(p.pendingChanges).forEach(([cid,ch])=>{
+      found=true;
+      const d=document.createElement('div');d.className='pend-item';
+      let changeText=ch.field==='fieldEdit'||ch.field==='charEdit'?ch.label||'Alteração na ficha':(ch.field||'')+': '+ch.oldVal+' → '+ch.newVal;
+      d.innerHTML='<div class="pend-who">'+(p.charname||p.nome)+'</div><div class="pend-change">'+changeText+'</div><div class="pend-acts"><button class="btn-approve" onclick="approvePend(\''+pk+'\',\''+cid+'\')">✓ Aprovar</button><button class="btn-reject" onclick="rejectPend(\''+pk+'\',\''+cid+'\')">✕ Rejeitar</button></div>';
+      c.appendChild(d);
+    });
+  });
+  if(!found)c.innerHTML='<div class="gp-empty">Nenhuma alteração pendente.</div>';
+}
+
+function renderSidebarMonsters(){
+  const c=document.getElementById('m-sidebar-monsters');c.innerHTML='';
+  const keys=Object.keys(allMonsters);
+  if(!keys.length){c.innerHTML='<div class="gp-empty">Nenhuma criatura.</div>';return;}
+  keys.forEach(mid2=>{
+    const m=allMonsters[mid2];const pct=Math.round(Math.max(0,m.pv.max?m.pv.cur/m.pv.max*100:0));
+    const d=document.createElement('div');d.className='sm-card';
+    d.innerHTML='<div class="sm-card-head"><div class="sm-av">'+(m.img?'<img src="'+m.img+'">':"👹")+'</div><div><div class="sm-name">'+m.nome+'</div><div class="sm-type">'+(m.tipo||'Criatura')+'</div></div></div><div class="sm-pv-row"><span class="sm-pv-lbl">PV</span><div class="sm-pv-bar"><div class="sm-pv-fill" style="width:'+pct+'%"></div></div><span class="sm-pv-num">'+m.pv.cur+'/'+m.pv.max+'</span></div><div class="sm-acts"><button class="sm-act" onclick="chgMon(\''+mid2+'\',-1)">− PV</button><button class="sm-act" onclick="chgMon(\''+mid2+'\',1)">+ PV</button><button class="sm-act" onclick="openMM(\''+mid2+'\')">✏</button><button class="sm-act" onclick="confDel(null,\'monstro\',\''+mid2+'\',\''+m.nome+'\')">🗑</button></div>';
+    c.appendChild(d);
+  });
+}
+
+async function approvePend(pk,cid){
+  const p=allPlayers[pk];if(!p?.pendingChanges?.[cid])return;
+  const ch=p.pendingChanges[cid];
+  if(ch.field==='charEdit'){await du('mesas/'+mesaId+'/players/'+pk,ch.data);}
+  else if(ch.field==='fieldEdit'){
+    const parts=ch.fieldPath.split('.');
+    if(parts.length===1)await du('mesas/'+mesaId+'/players/'+pk,{[parts[0]]:ch.newVal});
+    else if(parts.length===2)await du('mesas/'+mesaId+'/players/'+pk+'/'+parts[0],{[parts[1]]:ch.newVal});
+    else if(parts.length===3)await du('mesas/'+mesaId+'/players/'+pk+'/'+parts[0]+'/'+parts[1],{[parts[2]]:ch.newVal});
+  }else{await du('mesas/'+mesaId+'/players/'+pk+'/'+ch.field,{cur:ch.newVal});}
+  await dr('mesas/'+mesaId+'/players/'+pk+'/pendingChanges/'+cid);
+}
+async function rejectPend(pk,cid){await dr('mesas/'+mesaId+'/players/'+pk+'/pendingChanges/'+cid);}
+
+// ════════════ FICHA MODAL ════════════
+function openFicha(pk){
+  activePk=pk;const p=allPlayers[pk];if(!p)return;
+  document.getElementById('fm-title').textContent=(p.charname||p.nome).toUpperCase();
+  document.getElementById('fm-sub').textContent=(p.classe||'—')+' · '+(p.origem||'—')+' · NEX '+(p.nex||5)+'%';
+  openOv('ov-ficha');renderFV(p);renderFA(p);renderFS(p);renderFI(p);renderFE(p);renderFD(p);renderFR(p);
+  document.getElementById('m-rl').innerHTML='<div style="color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:9px;">— ⬡ rolar —</div>';
+}
+function renderFV(p){
+  const vc=p.vida?.cur??0,vm=p.vida?.max??0,pc=p.pe?.cur??0,pm=p.pe?.max??0,sc=p.san?.cur??0,sm=p.san?.max??0;
+  document.getElementById('mv-v').textContent=vc+'/'+vm;document.getElementById('mv-p').textContent=pc+'/'+pm;document.getElementById('mv-s').textContent=sc+'/'+sm;
+  document.getElementById('mb-v').style.width=Math.round(Math.max(0,vm?vc/vm*100:0))+'%';
+  document.getElementById('mb-p').style.width=Math.round(Math.max(0,pm?pc/pm*100:0))+'%';
+  document.getElementById('mb-s').style.width=Math.round(Math.max(0,sm?sc/sm*100:0))+'%';
+}
+function renderFA(p){const c=document.getElementById('m-attrs');c.innerHTML='';ATTRS.forEach(a=>{const r=document.createElement('div');r.className='ar';r.innerHTML='<span class="al">'+a+'</span><input class="ai2" type="number" value="'+(p.attrs?.[a]??0)+'" min="0" max="5" onchange="saveA(\''+a+'\',this.value)">';c.appendChild(r);});}
+function renderFE(p){const c=document.getElementById('m-extras');c.innerHTML='';[{l:'Defesa',k:'defesa',t:'number'},{l:'Proteção',k:'protecao',t:'text'},{l:'Desl.',k:'desl',t:'text'}].forEach(e=>{const r=document.createElement('div');r.className='er2';r.innerHTML='<span class="el2">'+e.l+'</span><input class="ei2" type="'+e.t+'" value="'+(p[e.k]??'')+'" onchange="saveE(\''+e.k+'\',this.value)">';c.appendChild(r);});}
+function renderFD(p){document.getElementById('m-desc').innerHTML=[{l:'APARÊNCIA',v:p.aparencia},{l:'PERSONALIDADE',v:p.personalidade},{l:'HISTÓRICO',v:p.historico},{l:'OBJETIVO',v:p.objetivo}].filter(d=>d.v).map(d=>'<div style="margin-bottom:5px"><span style="font-family:Share Tech Mono,monospace;font-size:8px;letter-spacing:2px;color:var(--text-dim)">'+d.l+'</span><br>'+d.v+'</div>').join('');}
+function renderFS(p){
+  const c=document.getElementById('m-sk');c.innerHTML='';
+  SKILLS.forEach(s2=>{const id=sk(s2.n);const v=p.skills?.[id];const b=v?.b??0;const trained=v?.trained??false;const r=document.createElement('div');r.className='skr';r.innerHTML='<span class="skn" style="'+(trained?'color:var(--gold)':'')+'">'+s2.n+(s2.t?'*':'')+'</span><span class="ska">'+s2.a+'</span><span style="display:flex;align-items:center;gap:2px"><input class="ski" type="number" value="'+b+'" min="-5" max="20" onchange="saveS(\''+id+'\',this.value)"><button class="db" onclick="rollSk(\''+s2.n+'\',\''+id+'\',\''+s2.a+'\')">⬡</button></span>';c.appendChild(r);});
+}
+function renderFI(p){
+  const g=document.getElementById('m-inv');g.innerHTML='';
+  (p.inventory||Array(8).fill(null)).forEach((item,i)=>{const s=document.createElement('div');s.className='isl '+(item?'has':'');s.onclick=()=>item?null:openItem(i);s.innerHTML=item?'<button class="ixb" onclick="remItem(event,'+i+')">✕</button><div class="isl-ic">'+item.icon+'</div><div class="isl-nm">'+item.name+'</div>':'<div class="isl-ic" style="opacity:.2;font-size:14px">+</div><div class="isl-nm">vazio</div>';g.appendChild(s);});
+}
+function renderFR(p){
+  const c=document.getElementById('m-rituals');c.innerHTML='';
+  if(!p.rituals||!Object.keys(p.rituals).length){c.innerHTML='<div style="font-family:Share Tech Mono,monospace;font-size:9px;color:var(--text-dim);padding:4px 0">Nenhum ritual.</div>';return;}
+  Object.entries(p.rituals).forEach(([rid,r])=>{const d=document.createElement('div');d.className='ritual-item';d.innerHTML='<div class="ri-name">'+r.nome+(r.status==='pending'?' <span style="font-family:Share Tech Mono,monospace;font-size:8px;color:var(--pending)">PENDENTE</span>':'')+'</div><div class="ri-tags">'+(r.elemento?'<span class="ri-tag elem">'+r.elemento+'</span>':'')+'<span class="ri-tag">Círculo '+r.circulo+'</span>'+(r.execucao?'<span class="ri-tag">'+r.execucao+'</span>':'')+'</div>'+(r.descricao?'<div class="ri-desc">'+r.descricao+'</div>':'')+(r.status==='pending'?'<div style="display:flex;gap:5px;margin-top:6px"><button style="flex:1;padding:5px;background:rgba(42,161,152,.1);border:1px solid var(--teal-bright);color:var(--teal-bright);font-family:Cinzel,serif;font-size:8px;letter-spacing:2px;cursor:pointer;" onclick="approveRitual(\''+activePk+'\',\''+rid+'\')">✓ Aprovar</button><button style="flex:1;padding:5px;background:transparent;border:1px solid var(--crimson);color:var(--crimson-bright);font-family:Cinzel,serif;font-size:8px;letter-spacing:2px;cursor:pointer;" onclick="rejectRitual(\''+activePk+'\',\''+rid+'\')">✕ Recusar</button></div>':'');c.appendChild(d);});
+}
+async function chgV(type,d2){if(!activePk||!mesaId)return;const p=allPlayers[activePk];const cur=Math.max(0,Math.min(p[type]?.max??0,(p[type]?.cur??0)+d2));await du('mesas/'+mesaId+'/players/'+activePk+'/'+type,{cur});allPlayers[activePk][type].cur=cur;renderFV(allPlayers[activePk]);}
+async function saveA(a,v){if(!activePk||!mesaId)return;await du('mesas/'+mesaId+'/players/'+activePk+'/attrs',{[a]:+v});}
+async function saveS(id,v){if(!activePk||!mesaId)return;await du('mesas/'+mesaId+'/players/'+activePk+'/skills/'+id,{b:+v});}
+async function saveE(k,v){if(!activePk||!mesaId)return;await du('mesas/'+mesaId+'/players/'+activePk,{[k]:isNaN(v)||v===''?v:+v});}
+function rollSk(name,id,attr){const p=allPlayers[activePk];const av=p.attrs?.[AK[attr]]??0;const b=p.skills?.[id]?.b??0;const roll=Math.floor(Math.random()*20)+1;const total=roll+av+b;const log=document.getElementById('m-rl');const e=document.createElement('div');e.className='re';let label,cls;if(roll===1){label='CRÍTICO!';cls='crit';}else if(roll===20){label='FALHA CRÍTICA!';cls='fail';}else{label='Total '+total;cls='ok';}e.classList.add(cls);e.textContent='[d20='+roll+'] '+name+': '+label;log.prepend(e);if(log.children.length>10)log.removeChild(log.lastChild);}
+function openItem(idx){activeSlot=idx;document.getElementById('i-nome').value='';openOv('ov-item');setTimeout(()=>document.getElementById('i-nome').focus(),100);}
+async function confirmItem(){if(activeSlot===null||!activePk||!mesaId)return;const name=document.getElementById('i-nome').value.trim()||'Item';const icon=document.getElementById('i-icon').value;const cat=document.getElementById('i-cat').value;const inv=[...(allPlayers[activePk].inventory||Array(8).fill(null))];inv[activeSlot]={name,icon,cat};await du('mesas/'+mesaId+'/players/'+activePk,{inventory:inv});allPlayers[activePk].inventory=inv;renderFI(allPlayers[activePk]);closeOv('ov-item');activeSlot=null;}
+async function remItem(e,idx){e.stopPropagation();if(!activePk||!mesaId)return;const inv=[...(allPlayers[activePk].inventory||Array(8).fill(null))];inv[idx]=null;await du('mesas/'+mesaId+'/players/'+activePk,{inventory:inv});allPlayers[activePk].inventory=inv;renderFI(allPlayers[activePk]);}
+async function approveRitual(pk,rid){await du('mesas/'+mesaId+'/players/'+pk+'/rituals/'+rid,{status:'approved'});}
+async function rejectRitual(pk,rid){await dr('mesas/'+mesaId+'/players/'+pk+'/rituals/'+rid);}
+
+// ════════════ MONSTERS ════════════
+function openMM(mid){
+  editMonId=mid||null;document.getElementById('mm-t').textContent=mid?'☽ Editar Criatura':'☽ Invocar Criatura';
+  if(mid){const m=allMonsters[mid];document.getElementById('mm-nome').value=m.nome||'';document.getElementById('mm-tipo').value=m.tipo||'';document.getElementById('mm-pv').value=m.pv?.max||30;document.getElementById('mm-def').value=m.defesa||12;document.getElementById('mm-atk').value=m.ataque||'';document.getElementById('mm-img').value=m.img||'';document.getElementById('mm-desc').value=m.descricao||'';monRevelas={...m.revela};}
+  else{['mm-nome','mm-tipo','mm-atk','mm-img','mm-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('mm-pv').value=30;document.getElementById('mm-def').value=12;monRevelas={nome:true,pv:true,img:true,tipo:false,def:false,desc:false};}
+  document.querySelectorAll('.rtog').forEach(t=>{t.classList.toggle('on',!!monRevelas[t.dataset.k]);t.querySelector('.rtog-chk').textContent=monRevelas[t.dataset.k]?'✓':'';});
+  openOv('ov-mon');
+}
+function togRev(el){const k=el.dataset.k;monRevelas[k]=!monRevelas[k];el.classList.toggle('on',monRevelas[k]);el.querySelector('.rtog-chk').textContent=monRevelas[k]?'✓':'';}
+async function invocar(){
+  const nome=document.getElementById('mm-nome').value.trim();if(!nome)return fe('mm-err','Informe o nome.');
+  const pvMax=+document.getElementById('mm-pv').value||30;const mid=editMonId||'mon_'+Date.now();
+  await ds('mesas/'+mesaId+'/monsters/'+mid,{nome,tipo:document.getElementById('mm-tipo').value.trim(),pv:{cur:pvMax,max:pvMax},defesa:+document.getElementById('mm-def').value||12,ataque:document.getElementById('mm-atk').value.trim(),img:document.getElementById('mm-img').value.trim(),descricao:document.getElementById('mm-desc').value.trim(),revela:{...monRevelas}});
+  closeOv('ov-mon');editMonId=null;
+}
+function renderMonsters(){
+  const g=document.getElementById('mon-g');const keys=Object.keys(allMonsters);
+  document.getElementById('monc-c').textContent=keys.length?'('+keys.length+')':'';
+  if(!keys.length){g.innerHTML='<div class="empty-st" style="color:var(--crimson);opacity:.4;font-size:9px;">Nenhuma criatura.</div>';return;}
+  g.innerHTML='';
+  keys.forEach(mid2=>{const m=allMonsters[mid2];const pct=Math.round(Math.max(0,m.pv.max?m.pv.cur/m.pv.max*100:0));const revs=Object.entries(m.revela||{}).map(([k,v])=>'<span class="rt '+(v?'on':'off')+'">'+k+'</span>').join('');const c=document.createElement('div');c.className='monc';c.innerHTML='<div class="monc-head"><div class="monc-av">'+(m.img?'<img src="'+m.img+'">':"👹")+'</div><div style="flex:1;min-width:0"><div class="monc-name">'+m.nome+'</div><div class="monc-type">'+(m.tipo||'Criatura')+'</div></div></div><div class="monc-pv"><span class="monc-pvl">PV</span><div class="monc-pvb"><div class="monc-pvf" style="width:'+pct+'%"></div></div><span class="monc-pvn">'+m.pv.cur+'/'+m.pv.max+'</span></div><div class="monc-reveals">'+revs+'</div><div class="monc-acts"><button class="mab" onclick="chgMon(\''+mid2+'\',-1)">− PV</button><button class="mab" onclick="chgMon(\''+mid2+'\',1)">+ PV</button><button class="mab" onclick="openMM(\''+mid2+'\')">✏</button><button class="mab" onclick="confDel(null,\'monstro\',\''+mid2+'\',\''+m.nome+'\')">🗑</button></div>';g.appendChild(c);});
+}
+async function chgMon(mid2,d){const m=allMonsters[mid2];if(!m)return;const cur=Math.max(0,Math.min(m.pv.max,m.pv.cur+d));await du('mesas/'+mesaId+'/monsters/'+mid2+'/pv',{cur});allMonsters[mid2].pv.cur=cur;renderMonsters();renderSidebarMonsters();}
+
+// ════════════ DICE LOG ════════════
+function renderDiceLog(log){
+  const entries=Object.values(log).sort((a,b)=>b.ts-a.ts).slice(0,20);
+  ['m-dice-log','j-dice-log'].forEach(id=>{const c=document.getElementById(id);if(!c)return;if(!entries.length){c.innerHTML='<div class="gp-empty">Nenhuma rolagem.</div>';return;}c.innerHTML='';entries.forEach(e=>{const d=document.createElement('div');d.className='dice-log-entry';let cls='ok';if(e.dice===20&&e.qty===1&&e.result===e.max)cls='crit';else if(e.dice===20&&e.qty===1&&e.result===1)cls='fail';d.innerHTML='<div class="dle-who">'+e.who+'</div><div class="dle-what '+cls+'">'+e.label+'</div>';c.appendChild(d);});});
+}
+
+// ════════════ CONFIRM ════════════
+function confDel(e,type,key,nome){
+  if(e)e.stopPropagation();
+  const msgs={jogador:'Apagar o agente <b>'+nome+'</b>?',mesa:'Apagar a mesa <b>'+nome+'</b>?',monstro:'Remover <b>'+nome+'</b>?'};
+  document.getElementById('conf-msg').innerHTML=msgs[type];pendingAction={type,key};openOv('ov-conf');
+}
+async function confirmAcao(){
+  if(!pendingAction)return;
+  if(pendingAction.type==='jogador')await dr('mesas/'+mesaId+'/players/'+pendingAction.key);
+  else if(pendingAction.type==='mesa')await dr('mesas/'+pendingAction.key);
+  else if(pendingAction.type==='monstro')await dr('mesas/'+mesaId+'/monsters/'+pendingAction.key);
+  closeOv('ov-conf');pendingAction=null;
+}
+
+// ════════════ JOGADOR ════════════
+function enterJ(){
+  role='j';document.getElementById('j-tag').textContent=player;
+  if(isMesaIA){
+    document.getElementById('ai-badge').style.display='inline-block';
+    const aiBtn=document.getElementById('ai-panel-btn');
+    if(aiBtn)aiBtn.style.display='';
+    // Painel começa aberto
+    aiPanelOpen=true;
+    const panel=document.getElementById('ai-panel');
+    if(panel)panel.classList.add('open');
+    document.getElementById('music-btn').style.display='block';
+  }
+  show('screen-jogador');checkChar();
+}
+
+async function checkChar(){
+  const data=await dg('mesas/'+mesaId+'/players/'+player);
+  if(data?.hasChar){document.getElementById('setup-area').style.display='none';document.getElementById('char-card').classList.add('vis');listenChar();}
+  else{document.getElementById('setup-area').style.display='block';document.getElementById('char-card').classList.remove('vis');}
+}
+
+function openEditChar(){
+  const p=allPlayers[player];if(!p)return;
+  isEditing=true;
+  document.getElementById('setup-title').textContent='◈ Editar Personagem';
+  document.getElementById('setup-submit-lbl').textContent='Salvar Alterações (requer aprovação)';
+  document.getElementById('s-cn').value=p.charname||'';document.getElementById('s-or').value=p.origem||'';document.getElementById('s-cl').value=p.classe||'';document.getElementById('s-tr').value=p.trilha||'';document.getElementById('s-nx').value=p.nex||5;document.getElementById('s-dl').value=p.desl||'9m/6q';document.getElementById('s-sp').value=p.sprite||'';document.getElementById('s-qt').value=p.quote||'';document.getElementById('s-ag').value=p.attrs?.Agilidade??0;document.getElementById('s-fo').value=p.attrs?.Força??0;document.getElementById('s-in').value=p.attrs?.Intelecto??0;document.getElementById('s-pr').value=p.attrs?.Presença??0;document.getElementById('s-vi').value=p.attrs?.Vigor??0;document.getElementById('s-pv').value=p.vida?.max??0;document.getElementById('s-pe').value=p.pe?.max??0;document.getElementById('s-sa').value=p.san?.max??0;document.getElementById('s-df').value=p.defesa||10;document.getElementById('s-pt').value=p.protecao||'';document.getElementById('s-ap').value=p.aparencia||'';document.getElementById('s-ps').value=p.personalidade||'';document.getElementById('s-hi').value=p.historico||'';document.getElementById('s-ob').value=p.objetivo||'';
+  selSkills={};if(p.skills){Object.entries(p.skills).forEach(([id,sv])=>{if(sv.trained){selSkills[id]=true;const el=document.querySelector('[data-sk="'+id+'"]');if(el){el.classList.add('on');el.querySelector('.stk').textContent='✓';}}});}
+  document.getElementById('skills-note').textContent=Object.values(selSkills).filter(Boolean).length+' perícias selecionadas';
+  document.getElementById('setup-area').style.display='block';document.getElementById('char-card').classList.remove('vis');document.getElementById('j-main').scrollTo({top:0,behavior:'smooth'});
+}
+
+async function saveChar(){
+  const cn=document.getElementById('s-cn').value.trim();
+  const cl=document.getElementById('s-cl').value;
+  const or=document.getElementById('s-or').value;
+  if(!cn)return fe('serr','Informe o nome do personagem.');
+  if(!cl)return fe('serr','Selecione uma classe.');
+  if(!or)return fe('serr','Selecione uma origem.');
+
+  const ag=+document.getElementById('s-ag').value||0;
+  const fo=+document.getElementById('s-fo').value||0;
+  const int=+document.getElementById('s-in').value||0;
+  const pr=+document.getElementById('s-pr').value||0;
+  const vi=+document.getElementById('s-vi').value||0;
+  const vals=[ag,fo,int,pr,vi];
+  const totalAttrs=ag+fo+int+pr+vi;
+
+  if(totalAttrs>9)return fe('serr','Total de atributos: '+totalAttrs+'. Máximo é 9 pontos.');
+  if(vals.some(v=>v>3))return fe('serr','Nenhum atributo pode ter mais de 3 pontos.');
+  const zerados=vals.filter(v=>v===0).length;
+  if(zerados>1)return fe('serr','Apenas 1 atributo pode ser zerado. Você tem '+zerados+' zerados.');
+
+  if(!isEditing){
+    const base=SKILLS_LIMIT[cl]??0;
+    const needed=base+int;
+    const chosen=Object.keys(selSkills).filter(k=>selSkills[k]).length;
+    if(cl!=='Mundano (NEX 0%)'&&chosen!==needed)
+      return fe('serr','Escolha exatamente '+needed+' perícias adicionais. ('+chosen+' selecionadas agora)');
+  }
+
+  // Validar rituais se Ocultista
+  if(!isEditing&&cl==='Ocultista'){
+    const rituaisChosen=Object.keys(selRituais||{}).filter(k=>selRituais[k]).length;
+    if(rituaisChosen!==3)return fe('serr','Ocultistas devem escolher exatamente 3 rituais de 1º Círculo. ('+rituaisChosen+' escolhidos)');
+  }
+
+  const vitals=calcVitals(cl,vi,pr);
+  const vm=vitals.pv, pm=vitals.pe, sm=vitals.san;
+
+  // Defesa = 10 + AGI + Proteção (itens). Proteção é campo separado.
+  const protBonus=(selInventario||[]).reduce((a,i)=>a+(i.protBonus||0),0);
+  const defesa=10+ag+protBonus;
+  const rdItens=(selInventario||[]).reduce((a,i)=>a+(i.rd||0),0);
+  const carga=5+(fo*5);
+  const cargaUsada=(selInventario||[]).reduce((a,i)=>a+i.espacos,0);
+
+  const origemFixed=ORIGEM_SKILLS[or]||[];
+  const skills=defSk();
+  origemFixed.forEach(n=>{const id=sk(n);if(skills[id]){skills[id].trained=true;skills[id].b=5;}});
+  Object.keys(selSkills).forEach(k=>{if(selSkills[k]&&skills[k]){skills[k].trained=true;skills[k].b=5;}});
+
+  // Inventário: usa o que o jogador selecionou
+  const inventory=Array(8).fill(null);
+  (selInventario||[]).slice(0,8).forEach((item,i)=>inventory[i]={name:item.name,icon:item.icon,cat:String(item._cat||0)});
+
+  // Rituais iniciais (Ocultista)
+  const rituaisIniciais={};
+  if(cl==='Ocultista'&&selRituais){
+    Object.keys(selRituais).filter(k=>selRituais[k]).forEach(nome=>{
+      const r=RITUAIS_1C.find(x=>x.n===nome);
+      if(r){const rid='r_inicial_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+        rituaisIniciais[rid]={nome,elemento:r.e,circulo:'1º',status:'approved',execucao:'Ação Padrão',descricao:'Ritual de 1º Círculo — '+r.e};}
+    });
+  }
+
+  const nex=cl==='Mundano (NEX 0%)'?0:(+document.getElementById('s-nx').value||5);
+  const trilha=document.getElementById('s-tr').value||'';
+
+  const data={
+    charname:cn, classe:cl, origem:or, hasChar:true,
+    trilha, nex, desl:'9m / 6q', defesa, carga, cargaUsada,
+    protecao:String(protBonus||0),
+    sprite:document.getElementById('s-sp').value.trim(),
+    quote:document.getElementById('s-qt').value.trim(),
+    aparencia:document.getElementById('s-ap').value.trim(),
+    personalidade:document.getElementById('s-ps').value.trim(),
+    historico:document.getElementById('s-hi').value.trim(),
+    objetivo:document.getElementById('s-ob').value.trim(),
+    attrs:{Agilidade:ag,Força:fo,Intelecto:int,Presença:pr,Vigor:vi},
+    skills, prestigio:0, patente:'Recruta', credito:'Baixo (2)',
+    limiteItens:{I:2,II:0,III:0,IV:0},
+    rituals:rituaisIniciais
+  };
+
+  if(!isEditing){
+    data.vida={cur:vm,max:vm};data.pe={cur:pm,max:pm};data.san={cur:sm,max:sm};
+    data.inventory=inventory;data.pendingChanges={};
+    await du('mesas/'+mesaId+'/players/'+player,data);
+  } else {
+    data.vida={cur:allPlayers[player]?.vida?.cur??0,max:vm};
+    data.pe={cur:allPlayers[player]?.pe?.cur??0,max:pm};
+    data.san={cur:allPlayers[player]?.san?.cur??0,max:sm};
+    data.inventory=allPlayers[player]?.inventory||inventory;
+    data.rituals=allPlayers[player]?.rituals||rituaisIniciais;
+    const pid='edit_'+Date.now();
+    await du('mesas/'+mesaId+'/players/'+player+'/pendingChanges/'+pid,{field:'charEdit',oldVal:'ficha anterior',newVal:'edição solicitada',label:'Edição completa da ficha',data,ts:Date.now()});
+    if(isMesaIA)setTimeout(()=>aiAutoApproveAll(),1500);
+    fe('serr','Edição enviada!');
+    setTimeout(()=>{document.getElementById('setup-area').style.display='none';document.getElementById('char-card').classList.add('vis');isEditing=false;},1500);
+    return;
+  }
+  document.getElementById('setup-area').style.display='none';
+  document.getElementById('char-card').classList.add('vis');
+  isEditing=false;
+  listenChar();
+  if(isMesaIA)setTimeout(()=>aiWelcome(data),1000);
+}
+
+// IA auto-aprova tudo quando é mesa IA
+async function aiAutoApproveAll(){
+  const p=await dg('mesas/'+mesaId+'/players/'+player);
+  if(!p?.pendingChanges)return;
+  for(const [cid,ch] of Object.entries(p.pendingChanges)){
+    await approvePendDirect(player,cid,ch);
+  }
+}
+async function approvePendDirect(pk,cid,ch){
+  if(ch.field==='charEdit'){await du('mesas/'+mesaId+'/players/'+pk,ch.data);}
+  else if(ch.field==='fieldEdit'){
+    const parts=ch.fieldPath.split('.');
+    if(parts.length===1)await du('mesas/'+mesaId+'/players/'+pk,{[parts[0]]:ch.newVal});
+    else if(parts.length===2)await du('mesas/'+mesaId+'/players/'+pk+'/'+parts[0],{[parts[1]]:ch.newVal});
+    else if(parts.length===3)await du('mesas/'+mesaId+'/players/'+pk+'/'+parts[0]+'/'+parts[1],{[parts[2]]:ch.newVal});
+  }else{await du('mesas/'+mesaId+'/players/'+pk+'/'+ch.field,{cur:ch.newVal});}
+  await dr('mesas/'+mesaId+'/players/'+pk+'/pendingChanges/'+cid);
+}
+
+async function proposeVital(field,delta){
+  const p=allPlayers[player];if(!p)return;
+  const oldVal=p[field]?.cur??0;const max=p[field]?.max??0;
+  const newVal=Math.max(0,Math.min(max,oldVal+delta));
+  if(newVal===oldVal)return;
+  if(isMesaIA){
+    // IA aprova vitais instantaneamente
+    await du('mesas/'+mesaId+'/players/'+player+'/'+field,{cur:newVal});
+    const el=document.getElementById('pn-'+field);
+    if(el){el.textContent='';} 
+    // Notifica a IA sobre mudança de vital
+    const labels={vida:'Vida',pe:'PE',san:'Sanidade'};
+    const dir=delta<0?'perdeu':'ganhou';
+    aiNotifyVitalChange(labels[field],oldVal,newVal,max,dir);
+  }else{
+    const pid=field+'_'+Date.now();
+    await du('mesas/'+mesaId+'/players/'+player+'/pendingChanges/'+pid,{field,oldVal,newVal,ts:Date.now()});
+    const el=document.getElementById('pn-'+field);
+    if(el){el.textContent='Aguardando aprovação... ('+oldVal+' → '+newVal+')';setTimeout(()=>{if(el)el.textContent='';},5000);}
+  }
+}
+
+// ════════════════ IA MESTRE ════════════════
+
+function buildAISystemPrompt(playerData){
+  return `Você é O Mestre — o narrador e controlador de uma campanha de Ordem Paranormal (RPG brasileiro de horror contemporâneo e investigação paranormal).
+
+CONTEXTO DO SISTEMA:
+- Ordem Paranormal usa d20 para checks de perícias/atributos (1=crítico de sucesso, 20=falha crítica)
+- Atributos: Agilidade, Força, Intelecto, Presença, Vigor (0-5)
+- NEX (Nível de Exposição ao Paranormal) vai de 5% a 99% — aumenta com experiência e exposição
+- Vitais: Vida (PV), Pontos de Esforço (PE), Sanidade
+- Quando PE chega a 0, personagem fica exausto; quando Sanidade chega a 0, o personagem enlouquece
+- Há 5 elementos de magia: Conhecimento, Energia, Morte, Sangue, Medo
+- Classes: Combatente, Especialista, Ocultista, Mundano
+
+PERSONAGEM ATUAL:
+Nome: ${playerData?.charname||'Desconhecido'}
+Classe: ${playerData?.classe||'?'} | Origem: ${playerData?.origem||'?'} | NEX: ${playerData?.nex||5}%
+Atributos: AGI ${playerData?.attrs?.Agilidade||0}, FOR ${playerData?.attrs?.Força||0}, INT ${playerData?.attrs?.Intelecto||0}, PRE ${playerData?.attrs?.Presença||0}, VIG ${playerData?.attrs?.Vigor||0}
+Vida: ${playerData?.vida?.cur||0}/${playerData?.vida?.max||0} | PE: ${playerData?.pe?.cur||0}/${playerData?.pe?.max||0} | Sanidade: ${playerData?.san?.cur||0}/${playerData?.san?.max||0}
+Defesa: ${playerData?.defesa||10} | Proteção: ${playerData?.protecao||'nenhuma'}
+Histórico: ${playerData?.aparencia||''} ${playerData?.historidade||''} ${playerData?.objetivo||''}
+
+SEU PAPEL:
+1. Narrar a aventura com atmosfera sombria e imersiva — use descrições ricas, tensão crescente, horror psicológico
+2. Criar e controlar NPCs, criaturas e situações paranormais
+3. Quando o jogador tenta algo que exige um check: peça para ele rolar o dado (informando qual perícia/atributo), depois você resolve baseado no resultado
+4. Manter o ritmo: cenas de investigação, combate, terror, momentos de alívio
+5. Quando for um combate: descreva o turno do inimigo depois da ação do jogador
+6. Aprovar rituais faz sentido para a ficção e o NEX do personagem
+7. Ser o único mestre — o jogador não tem mestre humano
+
+ESTILO: Respostas em português brasileiro. Tom sombrio, literário, imersivo. Máximo 3 parágrafos por resposta, exceto em situações dramáticas especiais. Seja dinâmico — avance a história.
+
+IMPORTANTE: Você pode criar criaturas, descrever combates, revelar mistérios, conceder XP (aumento de NEX) quando faz sentido. Improvise baseado nas ações do jogador.`;
+}
+
+async function aiWelcome(charData){
+  const p=charData||allPlayers[player];
+  addAIMessage('system','Personagem criado. O Mestre acorda...');
+  await callAI('O personagem '+p.charname+' acabou de ser criado. Faça uma narração de abertura curta e atmosférica para iniciar a aventura, apresentando o cenário inicial misterioso.',p,true);
+}
+
+async function aiNotifyVitalChange(stat,from,to,max,dir){
+  if(!isMesaIA)return;
+  const pct=Math.round(to/max*100);
+  if(stat==='Vida'&&pct<=20&&pct>0){
+    await callAI('SISTEMA: O jogador está com vida crítica ('+to+'/'+max+'). Reaja narrativamente a isso de forma breve e tensa.',allPlayers[player],false);}
+  else if(stat==='Sanidade'&&pct<=25&&pct>0){
+    await callAI('SISTEMA: A sanidade do personagem está muito baixa ('+to+'/'+max+'). Descreva brevemente os efeitos do terror psicológico.',allPlayers[player],false);}
+}
+
+function toggleAIPanel(){
+  aiPanelOpen=!aiPanelOpen;
+  const panel=document.getElementById('ai-panel');
+  if(panel)panel.classList.toggle('open',aiPanelOpen);
+  const btn=document.getElementById('ai-panel-btn');
+  if(btn)btn.classList.toggle('open',aiPanelOpen);
+  if(aiPanelOpen&&aiConversationHistory.length===0&&allPlayers[player]?.hasChar===false){
+    addAIMessage('narrator','Crie seu personagem primeiro, aventureiro. Quando estiver pronto, volte para mim e começamos.');
+  }
+}
+
+function addAIMessage(who,text,typing=false){
+  const c=document.getElementById('ai-narration');
+  // Remove typing indicator if present
+  const existing=c.querySelector('.ai-typing-wrap');if(existing)existing.remove();
+  if(typing){
+    const tw=document.createElement('div');tw.className='ai-typing-wrap ai-msg';
+    tw.innerHTML='<div class="ai-msg-who narrator">O Mestre</div><div class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+    c.appendChild(tw);c.scrollTop=c.scrollHeight;return tw;
+  }
+  const m=document.createElement('div');m.className='ai-msg';
+  const whoLabels={narrator:'🔮 O Mestre',player:'▶ Você',system:'◈ Sistema'};
+  m.innerHTML='<div class="ai-msg-who '+who+'">'+(whoLabels[who]||who)+'</div><div class="ai-msg-text'+(who==='system'?' system':'')+'">'+text.replace(/\n/g,'<br>')+'</div>';
+  c.appendChild(m);c.scrollTop=c.scrollHeight;
+  return m;
+}
+
+async function callAI(userMsg,charData,showUserMsg=true){
+  if(!anthropicApiKey){
+    addAIMessage('system','⚠ Cole sua OpenAI API Key no campo da tela de login.');
+    if(!aiPanelOpen){aiPanelOpen=true;document.getElementById('ai-panel').classList.add('open');}
+    return;
+  }
+  if(showUserMsg&&userMsg&&!userMsg.startsWith('SISTEMA:'))addAIMessage('player',userMsg);
+  addAIMessage(null,null,true);
+  document.getElementById('ai-send-btn').disabled=true;
+  document.getElementById('ai-status-lbl').textContent='pensando...';
+
+  // Monta histórico no formato Gemini
+  const systemPrompt=buildAISystemPrompt(charData||allPlayers[player]);
+  const contents=[];
+  // Gemini não tem campo system nativo — injeta como primeira mensagem user/model
+  contents.push({role:'user',parts:[{text:'[INSTRUÇÕES DO SISTEMA]\n'+systemPrompt+'\n\n[Confirme que entendeu seu papel respondendo apenas: Entendido, estou pronto.]'}]});
+  contents.push({role:'model',parts:[{text:'Entendido, estou pronto.'}]});
+  // Histórico da conversa
+  const hist=[...aiConversationHistory];
+  hist.push({role:'user',content:userMsg});
+  if(hist.length>20)hist.splice(0,hist.length-18);
+  hist.forEach(m=>{
+    contents.push({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]});
+  });
+
+  try{
+  const resp=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+anthropicApiKey},
+    body:JSON.stringify({
+      model:'gpt-4o-mini',
+      max_tokens:800,
+      temperature:0.9,
+      messages:[
+        {role:'system',content:buildAISystemPrompt(charData||allPlayers[player])},
+        ...aiConversationHistory.slice(-16).map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content})),
+        {role:'user',content:userMsg}
+      ]
+    })
+  });
+  const data=await resp.json();
+    const tw=document.querySelector('.ai-typing-wrap');if(tw)tw.remove();
+    if(data.error){
+      addAIMessage('system','Erro da API: '+data.error.message);
+      document.getElementById('ai-send-btn').disabled=false;
+      document.getElementById('ai-status-lbl').textContent='erro';
+      return;
+    }
+    const aiText=data.choices?.[0]?.message?.content||'[Sem resposta]';
+    aiConversationHistory.push({role:'user',content:userMsg});
+    aiConversationHistory.push({role:'assistant',content:aiText});
+    if(aiConversationHistory.length>20)aiConversationHistory=aiConversationHistory.slice(-18);
+    addAIMessage('narrator',aiText);
+    document.getElementById('ai-status-lbl').textContent='clique para falar';
+    document.getElementById('ai-send-btn').disabled=false;
+    speakAI(aiText);
+    if(!aiPanelOpen){aiPanelOpen=true;document.getElementById('ai-panel').classList.add('open');}
+  }catch(err){
+    const tw=document.querySelector('.ai-typing-wrap');if(tw)tw.remove();
+    addAIMessage('system','Erro ao conectar com o Mestre: '+err.message);
+    document.getElementById('ai-send-btn').disabled=false;
+    document.getElementById('ai-status-lbl').textContent='erro — tente novamente';
+  }
+}
+
+async function sendToAI(){
+  const inp=document.getElementById('ai-input');
+  const msg=inp.value.trim();if(!msg)return;
+  if(!allPlayers[player]?.hasChar){addAIMessage('system','Crie seu personagem primeiro.');if(!aiPanelOpen){aiPanelOpen=true;document.getElementById('ai-panel').classList.add('open');}return;}
+  inp.value='';
+  await callAI(msg,allPlayers[player],true);
+}
+
+// ════════════ WEB SPEECH API ════════════
+function speakAI(text){
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const clean=text.replace(/<[^>]*>/g,'').replace(/\*+/g,'').substring(0,600);
+  const utt=new SpeechSynthesisUtterance(clean);
+  utt.lang='pt-BR';utt.rate=0.82;utt.pitch=0.7;utt.volume=1.0;
+  // Tenta voz masculina/profunda em pt-BR
+  const voices=window.speechSynthesis.getVoices();
+  const ptVoice=voices.find(v=>v.lang==='pt-BR'&&v.name.toLowerCase().includes('male'))||
+                voices.find(v=>v.lang==='pt-BR')||
+                voices.find(v=>v.lang.startsWith('pt'));
+  if(ptVoice)utt.voice=ptVoice;
+  utt.onstart=()=>{isSpeaking=true;startMouthAnim();document.getElementById('ai-figure-wrap').classList.add('speaking');document.getElementById('ai-status-lbl').textContent='narrando...';};
+  utt.onend=()=>{isSpeaking=false;stopMouthAnim();document.getElementById('ai-figure-wrap').classList.remove('speaking');document.getElementById('ai-status-lbl').textContent='clique para falar';};
+  window.speechSynthesis.speak(utt);
+}
+
+function startMouthAnim(){
+  const mouth=document.getElementById('ai-mouth');
+  if(!mouth)return;
+  let open=false;
+  mouthAnim=setInterval(()=>{
+    open=!open;
+    if(open)mouth.setAttribute('d','M44,54 Q47,60 50,61 Q53,60 56,54');
+    else mouth.setAttribute('d','M44,56 Q50,58 56,56');
+  },120);
+}
+function stopMouthAnim(){
+  if(mouthAnim)clearInterval(mouthAnim);mouthAnim=null;
+  const mouth=document.getElementById('ai-mouth');
+  if(mouth)mouth.setAttribute('d','M44,56 Q50,58 56,56');
+}
+
+// ════════════ MÚSICA AMBIENTE (Web Audio API) ════════════
+function initAudio(){
+  if(audioCtx)return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+}
+
+function startMusic(){
+  initAudio();if(!audioCtx)return;
+  stopMusic();
+  const masterGain=audioCtx.createGain();masterGain.gain.value=0.45;masterGain.connect(audioCtx.destination);
+
+  // Drone base sombrio
+  function makeDrone(freq,gainVal,detune=0){
+    const osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=freq;osc.detune.value=detune;
+    const g=audioCtx.createGain();g.gain.value=gainVal;
+    const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=400;
+    osc.connect(filter);filter.connect(g);g.connect(masterGain);osc.start();
+    return{osc,g};
+  }
+  const d1=makeDrone(55,0.4);  // A1 baixo
+  const d2=makeDrone(82.5,0.3,-8); // E2 levemente desafinado
+  const d3=makeDrone(110,0.2,5);  // A2
+
+  // Pulso lento misterioso (LFO no gain)
+  const lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.15;
+  const lfoGain=audioCtx.createGain();lfoGain.gain.value=0.08;
+  lfo.connect(lfoGain);lfoGain.connect(masterGain.gain);lfo.start();
+
+  // Tinidos ocasionais
+  function schedTinkle(){
+    const delay=8000+Math.random()*12000;
+    setTimeout(()=>{
+      if(!musicOn)return;
+      const osc=audioCtx.createOscillator();osc.type='sine';
+      const freqs=[440,493.88,523.25,587.33,659.25];
+      osc.frequency.value=freqs[Math.floor(Math.random()*freqs.length)];
+      const g=audioCtx.createGain();g.gain.setValueAtTime(0,audioCtx.currentTime);g.gain.linearRampToValueAtTime(0.06,audioCtx.currentTime+0.05);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+3);
+      osc.connect(g);g.connect(masterGain);osc.start();osc.stop(audioCtx.currentTime+3);
+      schedTinkle();
+    },delay);
+  }
+  schedTinkle();
+
+  musicNodes=[d1,d2,d3,{osc:lfo,g:lfoGain},{g:masterGain}];
+  musicOn=true;
+  document.getElementById('music-btn').textContent='♪ Música ON';
+  document.getElementById('music-btn').classList.add('on');
+}
+
+function stopMusic(){
+  if(audioCtx){try{musicNodes.forEach(n=>{try{if(n.osc)n.osc.stop();}catch(e){}});}catch(e){}}
+  musicNodes=[];musicOn=false;
+  const btn=document.getElementById('music-btn');if(btn){btn.textContent='♪ Música';btn.classList.remove('on');}
+}
+
+function toggleMusic(){if(musicOn)stopMusic();else startMusic();}
+
+// ════════════ LISTENERS ════════════
+function listenChar(){
+  dl('mesas/'+mesaId+'/players/'+player,v=>{if(v){allPlayers[player]=v;renderCard(v);}});
+  dl('mesas/'+mesaId+'/players',v=>{if(v){allPlayers=v;renderJSidebar(v);}});
+  dl('mesas/'+mesaId+'/monsters',v=>{renderJMonsters(v||{});});
+  dl('mesas/'+mesaId+'/diceLog',v=>{renderDiceLog(v||{});});
+  // Se IA, escuta pending para auto-aprovar
+  if(isMesaIA){
+    dl('mesas/'+mesaId+'/players/'+player+'/pendingChanges',async v=>{
+      if(!v)return;
+      for(const [cid,ch] of Object.entries(v)){
+        if(ch.field!=='charEdit')await approvePendDirect(player,cid,ch);
+      }
+    });
+  }
+}
+
+async function saveNB(){const t=document.getElementById('cc-nb').value;await du('mesas/'+mesaId+'/players/'+player,{notebook:t});}
+
+function openRitualModal(){selElem=null;['rm-nome','rm-exec','rm-alc','rm-alvo','rm-dur','rm-res','rm-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('rm-circ').selectedIndex=0;document.querySelectorAll('.etog').forEach(e=>e.classList.remove('on'));openOv('ov-ritual');}
+function togElem(el){selElem=el.dataset.e;document.querySelectorAll('.etog').forEach(e=>e.classList.remove('on'));el.classList.add('on');}
+async function propRitual(){
+  const nome=document.getElementById('rm-nome').value.trim();if(!nome)return fe('rm-err','Informe o nome.');
+  const rid='r_'+Date.now();
+  await du('mesas/'+mesaId+'/players/'+player+'/rituals/'+rid,{nome,elemento:selElem||'',circulo:document.getElementById('rm-circ').value,execucao:document.getElementById('rm-exec').value.trim(),alcance:document.getElementById('rm-alc').value.trim(),alvo:document.getElementById('rm-alvo').value.trim(),duracao:document.getElementById('rm-dur').value.trim(),resistencia:document.getElementById('rm-res').value.trim(),descricao:document.getElementById('rm-desc').value.trim(),status:isMesaIA?'approved':'pending'});
+  closeOv('ov-ritual');
+  if(isMesaIA){const p=allPlayers[player];await callAI('SISTEMA: O jogador adicionou o ritual "'+nome+'" ao repertório. Reaja brevemente com o Mestre, validando ou comentando o ritual.',p,false);}
+}
+
+// ════════════ RENDER CHAR CARD ════════════
+function renderCard(p){
+  const ci=document.getElementById('cc-img'),ph=document.getElementById('cc-ph');
+  if(p.sprite){ci.src=p.sprite;ci.style.display='block';ph.style.display='none';}else{ci.style.display='none';ph.style.display='flex';}
+  document.getElementById('cc-name').textContent=p.charname||p.nome;
+  document.getElementById('cc-class').textContent=(p.classe||'—')+' · NEX '+(p.nex||5)+'%';
+  const qe=document.getElementById('cc-quote');if(p.quote){qe.textContent='"'+p.quote+'"';qe.style.display='block';}else qe.style.display='none';
+  document.getElementById('cc-tags').innerHTML=[p.origem,p.trilha].filter(Boolean).map(t=>'<span class="cc-tag">'+t+'</span>').join('');
+  document.getElementById('cc-desc').innerHTML=[{l:'Aparência',v:p.aparencia},{l:'Personalidade',v:p.personalidade},{l:'Histórico',v:p.historico},{l:'Objetivo',v:p.objetivo}].filter(d=>d.v).map(d=>'<div class="cdi"><label>'+d.l+'</label><p>'+d.v+'</p></div>').join('');
+  document.getElementById('cc-id').innerHTML='<div class="cc-idr">CLASSE: <em>'+(p.classe||'—')+'</em></div><div class="cc-idr">ORIGEM: <em>'+(p.origem||'—')+'</em></div><div class="cc-idr">NEX: <em>'+(p.nex||5)+'%</em></div><div class="cc-idr">DESL: <em>'+(p.desl||'9m/6q')+'</em></div>';
+  const ae=document.getElementById('cc-attrs');ae.innerHTML='';const maxV=Math.max(...ATTRS.map(a=>p.attrs?.[a]??0));
+  ATTRS.forEach(a=>{const v=p.attrs?.[a]??0;const hi=v===maxV&&v>0;const r=document.createElement('div');r.className='cc-arow'+(hi?' hi':'');r.innerHTML='<span class="cc-aname">'+a+'</span><span class="cc-aval">'+v+'</span>';ae.appendChild(r);});
+  const vc=p.vida?.cur??0,vm=p.vida?.max??0,sc=p.san?.cur??0,sm=p.san?.max??0,pc=p.pe?.cur??0,pm=p.pe?.max??0;
+  document.getElementById('cc-vv').textContent=vc+' / '+vm;document.getElementById('cc-sv').textContent=sc+' / '+sm;document.getElementById('cc-pe').textContent=pc+' / '+pm;
+  document.getElementById('cc-vb').style.width=Math.round(Math.max(0,vm?vc/vm*100:0))+'%';document.getElementById('cc-sb').style.width=Math.round(Math.max(0,sm?sc/sm*100:0))+'%';
+  // Calcula proteção e defesa dinamicamente do inventário atual
+  const invAtual=p.inventory||[];
+  const protDinamica=invAtual.reduce((acc,slot)=>{
+    if(!slot)return acc;
+    // Procura o item no catálogo para pegar protBonus
+    for(const cat of Object.values(ITEM_CATALOG)){
+      const found=cat.find(i=>i.name===slot.name);
+      if(found)return acc+(found.protBonus||0);
+    }
+    return acc;
+  },0);
+  const agi2=p.attrs?.Agilidade||0;
+  const defDinamica=10+agi2+protDinamica;
+
+  document.getElementById('cc-xt').innerHTML=
+    '<div class="cc-xt"><label>Defesa</label><span>'+defDinamica+'</span><div style="font-family:\'Share Tech Mono\',monospace;font-size:7px;color:var(--text-dim);margin-top:2px;">10+AGI'+agi2+(protDinamica?'+PROT'+protDinamica:'')+'</div></div>'+
+    '<div class="cc-xt"><label>Proteção</label><span>'+protDinamica+'</span><div style="font-family:\'Share Tech Mono\',monospace;font-size:7px;color:var(--text-dim);margin-top:2px;">itens de proteção</div></div>'+
+    '<div class="cc-xt"><label>Carga Máx.</label><span>'+(p.carga||(5+(p.attrs?.Força||0)*5))+'</span></div>'+
+    '<div class="cc-xt"><label>Desl.</label><span style="font-size:11px">'+(p.desl||'9m/6q')+'</span></div>'+
+    (p.trilha?'<div class="cc-xt"><label>Trilha</label><span style="font-size:10px">'+p.trilha+'</span></div>':'')+
+    '<div class="cc-xt" style="grid-column:1/-1;border-color:var(--gold-dim);background:rgba(201,168,76,.05)">'+
+      '<label style="color:var(--gold)">Patente · Prestígio</label>'+
+      '<span style="font-size:12px;">'+(p.patente||'Recruta')+'</span>'+
+      '<span style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--text-dim);margin-left:8px;">PR: '+(p.prestigio||0)+'</span>'+
+    '</div>'+
+    '<div class="cc-xt" style="grid-column:1/-1;background:rgba(201,168,76,.03)">'+
+      '<label>Crédito · Limites de Requisição</label>'+
+      '<span style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--text);">'+(p.credito||'Baixo (2)')+'</span>'+
+      '<span style="font-family:\'Share Tech Mono\',monospace;font-size:8px;color:var(--text-dim);display:block;margin-top:2px;">'+
+        'Cat.0: ∞ | Cat.I: '+(p.limiteItens?.I??2)+' | Cat.II: '+(p.limiteItens?.II??0)+' | Cat.III: '+(p.limiteItens?.III??0)+' | Cat.IV: '+(p.limiteItens?.IV??0)+
+      '</span>'+
+    '</div>';
+  document.getElementById('jv-vida-val').textContent=vc+'/'+vm;document.getElementById('jv-pe-val').textContent=pc+'/'+pm;document.getElementById('jv-san-val').textContent=sc+'/'+sm;
+  document.getElementById('jv-vida-bar').style.width=Math.round(Math.max(0,vm?vc/vm*100:0))+'%';document.getElementById('jv-pe-bar').style.width=Math.round(Math.max(0,pm?pc/pm*100:0))+'%';document.getElementById('jv-san-bar').style.width=Math.round(Math.max(0,sm?sc/sm*100:0))+'%';
+  const ig=document.getElementById('cc-inv');ig.innerHTML='';(p.inventory||Array(8).fill(null)).forEach(slot=>{const d=document.createElement('div');d.className='cc-is'+(slot?' has':'');d.innerHTML=slot?'<div class="cc-ie">'+slot.icon+'</div><div class="cc-in">'+slot.name+'</div>':'<div class="cc-ie" style="opacity:.1">·</div><div class="cc-in"></div>';ig.appendChild(d);});
+  const sl=document.getElementById('cc-sk');sl.innerHTML='';SKILLS.forEach(s2=>{const id=sk(s2.n);const sd=p.skills?.[id];const b=sd?.b??0;const trained=sd?.trained??false;const r=document.createElement('div');r.className='cc-sr';r.innerHTML='<span class="cc-sn" style="'+(trained?'color:var(--gold)':'')+'">'+s2.n+(s2.t?'*':'')+'</span><span class="cc-sa">'+s2.a+'</span><span class="cc-sv">'+(trained?'[T] ':'')+'+'+b+'</span>';sl.appendChild(r);});
+  const nb=document.getElementById('cc-nb');if(!nb.dataset.dirty)nb.value=p.notebook||'';
+  const rc2=document.getElementById('cc-rituals');rc2.innerHTML='';
+  const rituals=p.rituals?Object.entries(p.rituals):[];
+  rituals.forEach(([rid,r])=>{
+    if(r.status==='approved'){const d=document.createElement('div');d.className='ritual-card-j';d.innerHTML='<div class="rcj-name">'+r.nome+'</div><div class="rcj-tags">'+(r.elemento?'<span class="rcj-tag elem">'+r.elemento+'</span>':'')+'<span class="rcj-tag">Círculo '+r.circulo+'</span>'+(r.execucao?'<span class="rcj-tag">'+r.execucao+'</span>':'')+'</div>'+(r.descricao?'<div class="rcj-desc">'+r.descricao+'</div>':'');rc2.appendChild(d);}
+    else if(r.status==='pending'){const d=document.createElement('div');d.className='ritual-pending-j';d.innerHTML='<div class="rpj-label">⏳ Aguardando aprovação</div><div class="rpj-name">'+r.nome+'</div>';rc2.appendChild(d);}
+  });
+  const btn=document.createElement('button');btn.className='btn-add-ritual';btn.textContent='+ Propor Ritual ao Mestre';btn.onclick=openRitualModal;rc2.appendChild(btn);
+}
+
+function renderJSidebar(players){
+  const rows=document.getElementById('j-gp-rows');rows.innerHTML='';let cnt=0;
+  Object.keys(players).forEach(k=>{
+    const p=players[k];if(!p.hasChar)return;cnt++;const isMe=k===player;
+    const vc=p.vida?.cur??0,vm=p.vida?.max??0,sc=p.san?.cur??0,sm=p.san?.max??0;
+    const r=document.createElement('div');r.className='j-gp-row'+(isMe?' me':'');
+    r.innerHTML='<div class="j-gpa">'+(p.sprite?'<img src="'+p.sprite+'">':'🕵')+(isMe?'<div class="medot"></div>':'')+'</div><div class="j-gpin"><div class="j-gpname">'+(p.charname||p.nome)+'</div><div class="j-gpsub">'+(p.classe||'—')+' · '+(p.origem||'—')+'</div></div><div class="j-gpv"><div class="j-gpvr"><span class="j-gpvl v">V</span><div class="j-gpbar"><div class="j-gpfill v" style="width:'+Math.round(Math.max(0,vm?vc/vm*100:0))+'%"></div></div><span class="j-gpnum">'+vc+'/'+vm+'</span></div><div class="j-gpvr"><span class="j-gpvl s">S</span><div class="j-gpbar"><div class="j-gpfill s" style="width:'+Math.round(Math.max(0,sm?sc/sm*100:0))+'%"></div></div><span class="j-gpnum">'+sc+'/'+sm+'</span></div></div>';
+    rows.appendChild(r);
+  });
+  if(!cnt)rows.innerHTML='<div class="gp-empty">Nenhum agente.</div>';
+}
+
+function renderJMonsters(monsters){
+  const c=document.getElementById('j-monsters-list');c.innerHTML='';
+  const keys=Object.keys(monsters);
+  if(!keys.length){c.innerHTML='<div class="gp-empty">Nenhuma criatura.</div>';return;}
+  keys.forEach(mid2=>{
+    const m=monsters[mid2];const rv=m.revela||{};const pct=Math.round(Math.max(0,m.pv.max?m.pv.cur/m.pv.max*100:0));
+    const d=document.createElement('div');d.className='j-mp-card';
+    d.innerHTML='<div class="j-mpc-head"><div class="j-mpc-av">'+(rv.img&&m.img?'<img src="'+m.img+'">':'👤')+'</div><div><div class="j-mpc-name">'+(rv.nome?m.nome:'???')+'</div>'+(rv.tipo&&m.tipo?'<div class="j-mpc-type">'+m.tipo+'</div>':'')+'</div></div>'+(rv.pv?'<div class="j-mpc-pv"><span class="j-mpc-pvl">PV</span><div class="j-mpc-pvb"><div class="j-mpc-pvf" style="width:'+pct+'%"></div></div><span class="j-mpc-pvn">'+m.pv.cur+'/'+m.pv.max+'</span></div>':'');
+    c.appendChild(d);
+  });
+}
+
+// ════════════ EDIT SECTION ════════════
+function toggleEditSection(){
+  const body=document.getElementById('j-edit-body');const icon=document.getElementById('j-edit-toggle-icon');
+  const open=body.classList.toggle('open');icon.textContent=open?'▲ fechar':'▼ abrir';
+  if(open)buildEditSection();
+}
+
+function buildEditSection(){
+  const p=allPlayers[player];if(!p)return;
+  const ag=document.getElementById('j-attrs-edit');ag.innerHTML='';
+  ATTRS.forEach(a=>{const v=p.attrs?.[a]??0;ag.appendChild(makeEditNumCard(a,'attr',v,()=>proposeField('attrs.'+a,Math.max(0,v-1),a+': '+v+' → '+Math.max(0,v-1)),()=>proposeField('attrs.'+a,Math.min(5,v+1),a+': '+v+' → '+Math.min(5,v+1)),'pend-attr-'+a.replace(/[^a-z]/gi,'_')));});
+  const mp=document.getElementById('j-maxpts-edit');mp.innerHTML='';
+  [{l:'PV Máx',k:'vida_max',path:'vida.max',v:p.vida?.max??0,min:1,max:30},{l:'PE Máx',k:'pe_max',path:'pe.max',v:p.pe?.max??0,min:1,max:20},{l:'SAN Máx',k:'san_max',path:'san.max',v:p.san?.max??0,min:1,max:20}].forEach(f=>{mp.appendChild(makeEditNumCard(f.l,'stat',f.v,()=>proposeField(f.path,Math.max(f.min,f.v-1),f.l+': '+f.v+' → '+Math.max(f.min,f.v-1)),()=>proposeField(f.path,Math.min(f.max,f.v+1),f.l+': '+f.v+' → '+Math.min(f.max,f.v+1)),'pend-'+f.k));});
+  const cb=document.getElementById('j-combat-edit');cb.innerHTML='';
+  [{l:'Defesa',k:'defesa',v:p.defesa??10,min:0,max:30},{l:'NEX %',k:'nex',v:p.nex??5,min:5,max:99}].forEach(f=>{cb.appendChild(makeEditNumCard(f.l,'stat',f.v,()=>proposeField(f.k,Math.max(f.min,f.v-1),f.l+': '+f.v+' → '+Math.max(f.min,f.v-1)),()=>proposeField(f.k,Math.min(f.max,f.v+1),f.l+': '+f.v+' → '+Math.min(f.max,f.v+1)),'pend-cb-'+f.k));});
+  [{l:'Proteção',k:'protecao',v:p.protecao||''},{l:'Trilha',k:'trilha',v:p.trilha||''},{l:'Deslocamento',k:'desl',v:p.desl||''},{l:'Habilidades',k:'habilidades',v:p.habilidades||''}].forEach(f=>cb.appendChild(makeEditTextCard(f.l,'stat',f.v,f.k)));
+  const id2=document.getElementById('j-id-edit');id2.innerHTML='';
+  const sg2=document.getElementById('j-skills-edit');sg2.innerHTML='';
+  SKILLS.forEach(s2=>{const id3=sk(s2.n);const sd=p.skills?.[id3];const b=sd?.b??0;sg2.appendChild(makeEditNumCard(s2.n+(s2.t?'*':''),'skill',b,()=>proposeField('skills.'+id3+'.b',Math.max(-5,b-1),s2.n+': '+b+' → '+Math.max(-5,b-1)),()=>proposeField('skills.'+id3+'.b',Math.min(20,b+1),s2.n+': '+b+' → '+Math.min(20,b+1)),'pend-sk-'+id3,true));});
+}
+function makeEditNumCard(label,labelCls,val,onMinus,onPlus,pendId,small=false){
+  const d=document.createElement('div');d.className=small?'j-skill-edit-card':'j-edit-card';
+  const uid=pendId.replace(/[^a-z0-9_]/g,'_');
+  d.innerHTML=(small?'<div class="j-skill-edit-name">'+label+'</div>':'<span class="j-edit-label '+labelCls+'">'+label+'</span>')+'<div class="j-edit-row"><button class="j-eb">−</button><div class="j-edit-val">'+val+'</div><button class="j-eb">+</button></div><div class="j-edit-pend" id="'+uid+'"></div>';
+  const btns=d.querySelectorAll('.j-eb');btns[0].onclick=onMinus;btns[1].onclick=onPlus;return d;
+}
+function makeEditTextCard(label,labelCls,val,key){
+  const d=document.createElement('div');d.className='j-edit-card';
+  const uid='jinp_'+key.replace(/[^a-z0-9]/g,'_');const pendUid='pend_txt_'+key.replace(/[^a-z0-9]/g,'_');
+  d.innerHTML='<span class="j-edit-label '+labelCls+'">'+label+'</span><div class="j-edit-text-row"><input class="j-edit-input" type="text" id="'+uid+'" value="'+val+'" placeholder="'+label+'..."><button class="j-edit-send">Enviar</button></div><div class="j-edit-pend" id="'+pendUid+'"></div>';
+  d.querySelector('.j-edit-send').onclick=()=>proposeTextField(key,uid,label,pendUid);return d;
+}
+async function proposeField(fieldPath,newVal,label){
+  if(isMesaIA){
+    const parts=fieldPath.split('.');
+    if(parts.length===1)await du('mesas/'+mesaId+'/players/'+player,{[parts[0]]:newVal});
+    else if(parts.length===2)await du('mesas/'+mesaId+'/players/'+player+'/'+parts[0],{[parts[1]]:newVal});
+    else if(parts.length===3)await du('mesas/'+mesaId+'/players/'+player+'/'+parts[0]+'/'+parts[1],{[parts[2]]:newVal});
+    setTimeout(()=>buildEditSection(),300);
+  }else{
+    const pid='fld_'+Date.now();
+    await du('mesas/'+mesaId+'/players/'+player+'/pendingChanges/'+pid,{field:'fieldEdit',fieldPath,newVal,label,ts:Date.now()});
+    setTimeout(()=>buildEditSection(),300);
+  }
+}
+async function proposeTextField(key,inputId,label,pendId){
+  const inp=document.getElementById(inputId);if(!inp)return;const newVal=inp.value.trim();
+  if(isMesaIA){await du('mesas/'+mesaId+'/players/'+player,{[key]:newVal});}
+  else{const pid='txt_'+Date.now();await du('mesas/'+mesaId+'/players/'+player+'/pendingChanges/'+pid,{field:'fieldEdit',fieldPath:key,newVal,label:label+': "'+newVal+'"',ts:Date.now()});}
+  const pendEl=document.getElementById(pendId);if(pendEl){pendEl.textContent=isMesaIA?'Salvo!':'Aguardando...';setTimeout(()=>{if(pendEl)pendEl.textContent='';},3000);}
+}
+
+// Dice rolling
+async function rollDice(sides){
+  const qty=+document.getElementById('dice-qty').value||1;
+  const results=[];for(let i=0;i<qty;i++)results.push(Math.floor(Math.random()*sides)+1);
+  const total=results.reduce((a,b)=>a+b,0);
+  const area=document.getElementById('j-dice-result-area');area.style.display='block';
+  document.getElementById('j-dice-formula').textContent=qty+'d'+sides+(qty>1?' = '+results.join(' + '):'');
+  const indiv=document.getElementById('j-dice-individual');indiv.innerHTML='';
+  if(qty>1)results.forEach(r=>{const span=document.createElement('span');span.style.cssText='font-family:Special Elite,cursive;font-size:18px;padding:3px 8px;border:1px solid var(--border-hi);background:#0a0a0e;';if(sides===20&&r===20)span.style.color='var(--gold)';else if(sides===20&&r===1)span.style.color='var(--crimson-bright)';else span.style.color='var(--text-bright)';span.textContent=r;indiv.appendChild(span);});
+  const resEl=document.getElementById('j-dice-result');resEl.className='j-dice-result';
+  if(qty===1&&sides===20&&total===20)resEl.classList.add('crit');else if(qty===1&&sides===20&&total===1)resEl.classList.add('fail');
+  resEl.textContent=total;
+  const p=allPlayers[player];const who=p?.charname||player;
+  const label=qty>1?qty+'d'+sides+' = '+results.join('+')+' = '+total:'d'+sides+' = '+total;
+  const logKey='d_'+Date.now();
+  await ds('mesas/'+mesaId+'/diceLog/'+logKey,{who,dice:sides,qty,results,result:total,label,max:sides,ts:Date.now()});
+  const logData=await dg('mesas/'+mesaId+'/diceLog');
+  if(logData){const keys=Object.keys(logData).sort();if(keys.length>30){for(let i=0;i<keys.length-30;i++)await dr('mesas/'+mesaId+'/diceLog/'+keys[i]);}}
+  // Notifica IA sobre o resultado se painel aberto
+  if(isMesaIA&&aiPanelOpen&&allPlayers[player]?.hasChar){
+    let context='SISTEMA: O jogador rolou '+label+'.';
+    if(sides===20&&total===1)context+=' CRÍTICO DE SUCESSO (1 no d20)!';
+    else if(sides===20&&total===20)context+=' FALHA CRÍTICA (20 no d20)!';
+    await callAI(context,allPlayers[player],false);
+  }
+}
+
+// Load voices on mobile (needs user gesture)
+document.addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.getVoices();},{once:true});
+
+// Enter key no input da IA
+document.getElementById('ai-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendToAI();}});
+document.getElementById('i-nome').addEventListener('keydown',e=>{if(e.key==='Enter')confirmItem();});
+
+// Close overlays on bg click
+['ov-ficha','ov-mon','ov-nm','ov-item','ov-conf','ov-ritual'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id){if(id==='ov-conf'){closeOv(id);pendingAction=null;}else closeOv(id);}});
+});
+document.getElementById('cc-nb').addEventListener('input',function(){this.dataset.dirty='1';});
+</script>
+</body>
+</html>
