@@ -1084,91 +1084,7 @@ body{background:var(--ink);color:var(--text);font-family:'Crimson Pro',serif;fon
             <circle cx="55" cy="88" r="1" fill="#9b59b6" opacity="0.5"/>
           </svg>
         </div>
-          <div class="ai-particle"></div>
-          <div class="ai-particle"></div>
-          <div class="ai-particle"></div>
-          <svg class="ai-figure-svg" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:100px;">
-            <defs>
-              <radialGradient id="cloakGrad" cx="50%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#1a0f2e"/>
-                <stop offset="60%" stop-color="#0d0820"/>
-                <stop offset="100%" stop-color="#050310"/>
-              </radialGradient>
-              <radialGradient id="hoodShadow" cx="50%" cy="60%" r="55%">
-                <stop offset="0%" stop-color="#000008" stop-opacity="1"/>
-                <stop offset="70%" stop-color="#0a0518" stop-opacity="1"/>
-                <stop offset="100%" stop-color="#150a2a" stop-opacity="1"/>
-              </radialGradient>
-              <radialGradient id="glowBg" cx="50%" cy="40%" r="50%">
-                <stop offset="0%" stop-color="#4a1a7a" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#1a0830" stop-opacity="0"/>
-              </radialGradient>
-              <filter id="softGlow">
-                <feGaussianBlur stdDeviation="2.5" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-              <filter id="strongGlow">
-                <feGaussianBlur stdDeviation="4" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-              <!-- Máscara de sombra para o interior do capuz -->
-              <radialGradient id="faceVoid" cx="50%" cy="45%" r="48%">
-                <stop offset="0%" stop-color="#000005"/>
-                <stop offset="55%" stop-color="#03010a"/>
-                <stop offset="100%" stop-color="#0a0520"/>
-              </radialGradient>
-            </defs>
-
-            <!-- Aura de fundo -->
-            <ellipse cx="60" cy="70" rx="52" ry="65" fill="url(#glowBg)"/>
-
-            <!-- Manto/corpo — forma larga encapuzada -->
-            <path d="M10,150 Q5,110 8,90 Q15,70 25,65 Q35,60 40,58 Q50,55 60,54 Q70,55 80,58 Q85,60 95,65 Q105,70 112,90 Q115,110 110,150 Z" fill="url(#cloakGrad)"/>
-
-            <!-- Bordas do manto com brilho dourado/roxo -->
-            <path d="M40,58 Q50,52 60,51 Q70,52 80,58" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-            <path d="M25,65 Q30,58 40,58 Q50,52 60,51 Q70,52 80,58 Q90,58 95,65" fill="none" stroke="#7b3fa0" stroke-width="0.6" opacity="0.5"/>
-
-            <!-- Linha central do manto -->
-            <line x1="60" y1="75" x2="60" y2="145" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/>
-
-            <!-- Capuz — forma principal -->
-            <path d="M22,75 Q18,55 20,38 Q25,15 40,8 Q50,3 60,2 Q70,3 80,8 Q95,15 100,38 Q102,55 98,75 Q90,85 75,87 Q65,88 60,88 Q55,88 45,87 Q30,85 22,75 Z" fill="url(#cloakGrad)"/>
-
-            <!-- Borda do capuz com brilho dourado -->
-            <path d="M22,75 Q18,55 20,38 Q25,15 40,8 Q50,3 60,2 Q70,3 80,8 Q95,15 100,38 Q102,55 98,75" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.85"/>
-
-            <!-- Interior do capuz — escuridão profunda -->
-            <ellipse cx="60" cy="52" rx="28" ry="32" fill="url(#hoodShadow)"/>
-            <ellipse cx="60" cy="54" rx="24" ry="28" fill="url(#faceVoid)"/>
-
-            <!-- Sombra extra para aprofundar o rosto -->
-            <ellipse cx="60" cy="50" rx="20" ry="25" fill="#000008" opacity="0.9"/>
-
-            <!-- Olhos — só um brilho roxo muito sutil, quase imperceptível -->
-            <ellipse cx="52" cy="44" rx="3" ry="1.8" fill="#3d0d6b" opacity="0.4" filter="url(#softGlow)"/>
-            <ellipse cx="68" cy="44" rx="3" ry="1.8" fill="#3d0d6b" opacity="0.4" filter="url(#softGlow)"/>
-
-            <!-- BOCA — única parte visível, com brilho -->
-            <g id="ai-mouth-g">
-              <path id="ai-mouth" d="M51,63 Q56,66 60,66 Q64,66 69,63" fill="none" stroke="#cc88ff" stroke-width="1.8" stroke-linecap="round" filter="url(#softGlow)" opacity="0.95"/>
-              <!-- Brilho extra da boca -->
-              <path d="M51,63 Q56,66 60,66 Q64,66 69,63" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-linecap="round" opacity="0.4"/>
-            </g>
-
-            <!-- Fecho/amuleto no pescoço -->
-            <circle cx="60" cy="80" r="3.5" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.7"/>
-            <circle cx="60" cy="80" r="1.5" fill="#9b59b6" opacity="0.6" filter="url(#softGlow)"/>
-
-            <!-- Partícula de magia na mão esquerda -->
-            <circle cx="32" cy="110" r="2.5" fill="#7b2fbe" opacity="0.5" filter="url(#softGlow)"/>
-            <circle cx="88" cy="105" r="2" fill="#9b59b6" opacity="0.4" filter="url(#softGlow)"/>
-
-            <!-- Símbolo místico no manto -->
-            <polygon points="60,95 56,102 64,102" fill="none" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/>
-          </svg>
-        </div>
-        <div style="flex:1;min-width:0;padding-left:4px;">
+                <div style="flex:1;min-width:0;padding-left:4px;">
           <div class="ai-panel-title">🔮 O Mestre</div>
           <div class="ai-status" id="ai-status-lbl" style="margin-top:3px;">clique para falar</div>
         </div>
@@ -1188,62 +1104,6 @@ body{background:var(--ink);color:var(--text);font-family:'Crimson Pro',serif;fon
       </div>
     </div>
   </div>
-</div>
-
-<!-- figura mestre (hidden, mantida para compatibilidade JS) -->
-<div class="ai-mestre-container" id="ai-mestre-fig" style="display:none!important;" onclick="toggleAIPanel()">
-  <div class="ai-figure-wrap" id="ai-figure-wrap">
-    <div class="ai-figure-glow"></div>
-    <div class="ai-particle"></div>
-    <div class="ai-particle"></div>
-    <div class="ai-particle"></div>
-    <div class="ai-particle"></div>
-    <!-- SVG Figura Mística -->
-    <svg class="ai-figure-svg" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="bodyGrad" cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stop-color="#2a1a4a"/>
-          <stop offset="100%" stop-color="#0a0810"/>
-        </radialGradient>
-        <radialGradient id="faceGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#1a0f2e"/>
-          <stop offset="100%" stop-color="#0a0810"/>
-        </radialGradient>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <!-- Corpo/Manto -->
-      <ellipse cx="50" cy="105" rx="35" ry="30" fill="url(#bodyGrad)" opacity="0.95"/>
-      <path d="M20,90 Q15,115 12,130 L88,130 Q85,115 80,90 Q65,110 50,108 Q35,110 20,90Z" fill="url(#bodyGrad)"/>
-      <!-- Capuz -->
-      <path d="M22,60 Q18,40 20,25 Q30,5 50,3 Q70,5 80,25 Q82,40 78,60 Q70,72 50,73 Q30,72 22,60Z" fill="url(#bodyGrad)"/>
-      <!-- Borda do capuz - ouro -->
-      <path d="M22,60 Q18,40 20,25 Q30,5 50,3 Q70,5 80,25 Q82,40 78,60" fill="none" stroke="#c9a84c" stroke-width="1.2" opacity="0.8"/>
-      <!-- Rosto / sombra -->
-      <ellipse cx="50" cy="48" rx="18" ry="20" fill="url(#faceGrad)"/>
-      <!-- Olhos brilhantes -->
-      <ellipse cx="43" cy="44" rx="3.5" ry="2.5" fill="#9b59b6" filter="url(#glow)" opacity="0.9"/>
-      <ellipse cx="57" cy="44" rx="3.5" ry="2.5" fill="#9b59b6" filter="url(#glow)" opacity="0.9"/>
-      <ellipse cx="43" cy="44" rx="1.5" ry="1.2" fill="#e0c0ff"/>
-      <ellipse cx="57" cy="44" rx="1.5" ry="1.2" fill="#e0c0ff"/>
-      <!-- Boca — animada por JS -->
-      <g id="ai-mouth-g">
-        <!-- Boca fechada padrão -->
-        <path id="ai-mouth" d="M44,56 Q50,58 56,56" fill="none" stroke="#9b59b6" stroke-width="1.2" stroke-linecap="round"/>
-      </g>
-      <!-- Runas no manto -->
-      <text x="50" y="95" text-anchor="middle" font-size="7" fill="#4a3a7a" opacity="0.7" font-family="serif">ᚱᚢᚾᛖ</text>
-      <!-- Orbe na mão -->
-      <circle cx="72" cy="82" r="6" fill="none" stroke="#9b59b6" stroke-width="0.8" opacity="0.7"/>
-      <circle cx="72" cy="82" r="3" fill="#9b59b6" opacity="0.5" filter="url(#glow)"/>
-      <!-- Triângulo místico no peito -->
-      <polygon points="50,72 44,82 56,82" fill="none" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
-    </svg>
-  </div>
-  <div class="ai-label">O Mestre</div>
-  <div class="ai-status" id="ai-status-lbl">clique para falar</div>
 </div>
 
 
@@ -2590,88 +2450,40 @@ function stopMouthAnim(){
 }
 
 // ════════════ MÚSICA AMBIENTE (Web Audio API) ════════════
-function initAudio(){
-  if(audioCtx)return;
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-}
+function initAudio(){} // mantido por compatibilidade
 
 function startMusic(){
-  // Usa Web Audio com sons mais musicais e menos industriais
-  initAudio();if(!audioCtx)return;
-  stopMusic();
-
-  const master=audioCtx.createGain();
-  master.gain.setValueAtTime(0,audioCtx.currentTime);
-  master.gain.linearRampToValueAtTime(0.5,audioCtx.currentTime+4);
-  master.connect(audioCtx.destination);
-
-  // Notas da escala menor harmônica de Lá — mais musical
-  const noteFreqs=[110,130.81,146.83,164.81,174.61,195.99,220];
-
-  // Acorde base Am — soa como trilha sonora, não ruído
-  function playNote(freq,vol,type='sine'){
-    const osc=audioCtx.createOscillator();
-    const g=audioCtx.createGain();
-    const lp=audioCtx.createBiquadFilter();
-    osc.type=type;osc.frequency.value=freq;
-    lp.type='lowpass';lp.frequency.value=1200;lp.Q.value=0.8;
-    g.gain.value=vol;
-    osc.connect(lp);lp.connect(g);g.connect(master);
-    osc.start();return{osc,g};
-  }
-
-  // Base grave (Am)
-  const b1=playNote(55,0.35);       // A1
-  const b2=playNote(110,0.2);       // A2
-  const b3=playNote(130.81,0.12);   // C3
-  const b4=playNote(164.81,0.08);   // E3
-
-  // Pad atmosférico — onda triangular soa mais como sintetizador
-  const p1=playNote(220,0.12,'triangle');   // A3
-  const p2=playNote(261.63,0.08,'triangle');// C4
-  const p3=playNote(329.63,0.06,'triangle');// E4
-
-  // LFO no volume do pad para dar "respiração"
-  const lfo=audioCtx.createOscillator();
-  lfo.type='sine';lfo.frequency.value=0.08;
-  const lfoG=audioCtx.createGain();lfoG.gain.value=0.06;
-  lfo.connect(lfoG);lfoG.connect(p1.g.gain);lfo.start();
-
-  // Delay suave para reverb
-  const delay=audioCtx.createDelay(3);delay.delayTime.value=2.2;
-  const dg=audioCtx.createGain();dg.gain.value=0.18;
-  p1.g.connect(delay);delay.connect(dg);dg.connect(master);
-  dg.connect(delay);// feedback suave
-
-  // Harpejos ocasionais — mais musicais que tinidos aleatórios
-  let arpStep=0;
-  function schedArp(){
-    setTimeout(()=>{
-      if(!musicOn)return;
-      const freq=noteFreqs[arpStep%noteFreqs.length];
-      arpStep++;
-      const osc=audioCtx.createOscillator();
-      osc.type='triangle';osc.frequency.value=freq*2;
-      const g=audioCtx.createGain();
-      g.gain.setValueAtTime(0,audioCtx.currentTime);
-      g.gain.linearRampToValueAtTime(0.18,audioCtx.currentTime+0.05);
-      g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+3.5);
-      osc.connect(g);g.connect(master);osc.start();osc.stop(audioCtx.currentTime+3.5);
-      schedArp();
-    },3500+Math.random()*5000);
-  }
-  schedArp();
-
-  musicNodes=[b1,b2,b3,b4,p1,p2,p3,{osc:lfo,g:lfoG},{g:master}];
-  musicOn=true;
-  document.getElementById('music-btn').textContent='♪ Música ON';
-  document.getElementById('music-btn').classList.add('on');
+  const audio=document.getElementById('bg-music');
+  if(!audio)return;
+  audio.volume=0;
+  audio.play().then(()=>{
+    // Fade in suave
+    let vol=0;
+    const fade=setInterval(()=>{
+      vol=Math.min(0.55,vol+0.02);
+      audio.volume=vol;
+      if(vol>=0.55)clearInterval(fade);
+    },150);
+    musicOn=true;
+    document.getElementById('music-btn').textContent='♪ Música ON';
+    document.getElementById('music-btn').classList.add('on');
+  }).catch(()=>{
+    // Autoplay bloqueado — tenta de novo no próximo clique
+    musicOn=false;
+  });
 }
 
 function stopMusic(){
-  if(audioCtx){try{musicNodes.forEach(n=>{try{if(n.osc)n.osc.stop();}catch(e){}});}catch(e){}}
-  musicNodes=[];musicOn=false;
-  const btn=document.getElementById('music-btn');if(btn){btn.textContent='♪ Música';btn.classList.remove('on');}
+  const audio=document.getElementById('bg-music');
+  if(!audio)return;
+  // Fade out suave
+  const fade=setInterval(()=>{
+    audio.volume=Math.max(0,audio.volume-0.03);
+    if(audio.volume<=0){clearInterval(fade);audio.pause();audio.currentTime=0;}
+  },100);
+  musicOn=false;
+  const btn=document.getElementById('music-btn');
+  if(btn){btn.textContent='♪ Música';btn.classList.remove('on');}
 }
 
 function toggleMusic(){if(musicOn)stopMusic();else startMusic();}
@@ -2888,5 +2700,9 @@ document.getElementById('i-nome').addEventListener('keydown',e=>{if(e.key==='Ent
 });
 document.getElementById('cc-nb').addEventListener('input',function(){this.dataset.dirty='1';});
 </script>
+<!-- Música de fundo -->
+<audio id="bg-music" loop preload="auto">
+  <source src="horror-ambience.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
